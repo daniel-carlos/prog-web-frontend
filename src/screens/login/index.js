@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { api } from "../../api/backend";
+import { useStore } from "../../context/context";
+import { Redirect } from "react-router-dom";
 
 function LoginPage(props) {
     const [loading, setLoading] = useState(false);
@@ -7,17 +9,25 @@ function LoginPage(props) {
     const [hasError, setHasError] = useState(false);
     const [user, setUser] = useState({ username: "", password: "" });
 
+    const login = useStore(store => store.login);
+    const isLoggedIn = useStore(store => store.isLoggedIn);
+    const logged = useStore(store => store.logged);
+
     const tryLogin = async () => {
         setLoading(true);
         const resp = await api.post("/login", { username: user.username, password: user.password });
         if (resp.ok) {
             if (resp.data.ok) {
-                console.log(resp.data.user_id);
                 setHasError(false);
                 setErrorMsg("");
+
+                login(resp.data.token);
+                console.log(isLoggedIn(resp.data.token));
+
+                setLoading(true);
             } else {
-                setHasError(true);
                 setErrorMsg(resp.data.msg);
+                setHasError(true);
             }
         }
         setLoading(false);
@@ -25,6 +35,8 @@ function LoginPage(props) {
 
     return (
         <div className="container">
+            {logged === true && <Redirect to="/" />}
+
             {hasError === true && <div className='text-danger'>{errorMsg}</div>}
             <div className="mb-3">
                 <label htmlFor="login-user" className="form-label">Usuário</label>
