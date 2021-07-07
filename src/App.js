@@ -5,6 +5,7 @@ import HomePage from './screens/home';
 import LoginPage from './screens/login';
 import ProductPage from './screens/product';
 import CartPage from './screens/cart';
+import MyOrders from './screens/my_orders';
 
 import {
   BrowserRouter as Router,
@@ -34,6 +35,13 @@ function App() {
             path="/product"
             render={() => {
               return <ProductPage></ProductPage>
+            }}
+          />
+
+          <Route
+            path="/meus-pedidos"
+            render={() => {
+              return <MyOrders></MyOrders>
             }}
           />
 
