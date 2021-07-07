@@ -16,7 +16,6 @@ function HomePage(props) {
         };
     }, [])
 
-
     const ProductCard = ({ p }) => {
         return (
             <div className="card my-2" style={{ height: 400, width: 250 }}>
@@ -29,7 +28,7 @@ function HomePage(props) {
                         <p className="flex-grow-1 fs-4 card-text">R$ {p.price}</p>
                     </div>
                     <Link 
-                    // to="/carrinho" 
+                    to="/" //TODO: mudar para carrinho
                     onClick={()=>{
                         addCart(p.id)
                     }}

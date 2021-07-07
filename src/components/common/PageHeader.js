@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useStore } from "../../context/context";
 import icon from "../../assets/icons/jumping-dog.png";
 
 function PageHeader(props) {
-    const { logged, logout, login, cart } = useStore(state => ({ logged: state.logged, logout: state.logout, cart: state.cart }));
+    const { logged, logout, login, cart, reloadCart } = useStore(state => ({ logged: state.logged, logout: state.logout, cart: state.cart, reloadCart: state.reloadCart }));
     const [profilePopover, setProfilePopover] = useState(false);
+
+    useEffect(()=>{
+        reloadCart()
+    }, [])
 
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark">

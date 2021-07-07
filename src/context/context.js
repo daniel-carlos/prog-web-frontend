@@ -18,6 +18,17 @@ export const useStore = create(set => ({
         set(state => ({ logged: false }))
     },
     cart: [],
+    reloadCart: () => {
+        //load cart from cookies
+        let _cart_str = getCookie("pw1.cart");
+        let _cart = []
+        try {
+            _cart = JSON.parse(_cart_str)
+        } catch (error) {
+            console.log("cookie cart");
+        }
+        set(state => ({ cart: _cart }));
+    },
     clearCart: () => {
         set(state => ({ cart: [] }));
         setCookie("pw1.cart", []);
@@ -33,9 +44,22 @@ export const useStore = create(set => ({
             console.log("cookie cart");
         }
 
-        _cart = [..._cart, product_id]
+        let insertNew = true;
+        _cart = _cart.map((p, i) => {
+            if (p.pid == product_id) {
+                insertNew = false;
+                return { ...p, q: p.q + 1 };
+            } else {
+                return p;
+            }
+        })
+
+        if (insertNew === true) {
+            _cart = [..._cart, { pid: product_id, q: 1 }]
+        }
+
         set(state => ({ cart: _cart }));
-        setCookie("pw1.cart", JSON.stringify(_cart.sort((a,b) => a-b)))
+        setCookie("pw1.cart", JSON.stringify(_cart.sort((a, b) => a - b)))
         console.log("Cart", getCookie("pw1.cart"))
     }
 }))
