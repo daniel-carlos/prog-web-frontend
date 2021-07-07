@@ -3,6 +3,8 @@ import PageHeader from './components/common/PageHeader';
 
 import HomePage from './screens/home';
 import LoginPage from './screens/login';
+import ProductPage from './screens/product';
+import CartPage from './screens/cart';
 
 import {
   BrowserRouter as Router,
@@ -25,6 +27,20 @@ function App() {
             path="/login"
             render={() => {
               return <LoginPage></LoginPage>
+            }}
+          />
+
+          <Route
+            path="/product"
+            render={() => {
+              return <ProductPage></ProductPage>
+            }}
+          />
+
+          <Route
+            path="/cart"
+            render={() => {
+              return <CartPage></CartPage>
             }}
           />
 
