@@ -6,13 +6,15 @@ import LoginPage from './screens/login';
 import ProductPage from './screens/product';
 import CartPage from './screens/cart';
 import MyOrders from './screens/my_orders';
+import ProductList from './screens/product_list';
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  Redirect
+  Redirect,
+  useRouteMatch
 } from "react-router-dom";
 import { useStore } from "./context/context";
 
@@ -32,9 +34,16 @@ function App() {
           />
 
           <Route
-            path="/product"
+            path={`/product/:productId`}
             render={() => {
               return <ProductPage></ProductPage>
+            }}
+          />
+
+          <Route
+            path="/lista"
+            render={() => {
+              return <ProductList></ProductList>
             }}
           />
 
@@ -46,7 +55,7 @@ function App() {
           />
 
           <Route
-            path="/cart"
+            path="/carrinho"
             render={() => {
               return <CartPage></CartPage>
             }}
