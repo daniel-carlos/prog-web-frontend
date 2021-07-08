@@ -39,7 +39,7 @@ function PageHeader(props) {
                                 </i>
                             </Link>
                         </li>
-                        {logged === false ?
+                        {logged === true ?
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
@@ -47,7 +47,7 @@ function PageHeader(props) {
                                 <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>
                                     <li><hr className="dropdown-divider" /></li>
-                                    <li><Link className="dropdown-item" to="/login">Sair</Link></li>
+                                    <li><Link onChange={()=>{logout()}} className="dropdown-item" to="/login">Sair</Link></li>
                                 </ul>
                             </li>
                             :

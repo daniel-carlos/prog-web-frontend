@@ -14,7 +14,7 @@ export const useStore = create(set => ({
         set(state => ({ logged: true }))
     },
     logout: () => {
-        setCookie("tw1.tkn", "", -1);
+        setCookie("tw1.tkn", "", 0);
         set(state => ({ logged: false }))
     },
     cart: [],
