@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from "../../api/backend";
-import { useStore } from "../../context/context";
+import { useStore, isLoggedIn } from "../../context/context";
 import { Redirect } from "react-router-dom";
 
 function LoginPage(props) {
@@ -10,8 +10,11 @@ function LoginPage(props) {
     const [user, setUser] = useState({ username: "", password: "" });
 
     const login = useStore(store => store.login);
-    const isLoggedIn = useStore(store => store.isLoggedIn);
-    const logged = useStore(store => store.logged);
+    const logged = useStore(state => state.logged)
+
+    // useEffect(()=>{
+    //     setLogged(isLoggedIn());
+    // })
 
     const tryLogin = async () => {
         setLoading(true);
@@ -20,10 +23,7 @@ function LoginPage(props) {
             if (resp.data.ok) {
                 setHasError(false);
                 setErrorMsg("");
-
                 login(resp.data.token);
-                console.log(isLoggedIn(resp.data.token));
-
                 setLoading(true);
             } else {
                 setErrorMsg(resp.data.msg);

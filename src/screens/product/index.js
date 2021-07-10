@@ -30,7 +30,6 @@ function ProductPage(props) {
     useEffect(async () => {
         setLoaded(false);
         const resp = await api.get(`/product/${productId}`);
-        console.log(resp)
         if (resp.data.ok === true) {
             setProduto(resp.data.product);
             setError(false)

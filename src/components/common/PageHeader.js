@@ -4,12 +4,7 @@ import { useStore } from "../../context/context";
 import icon from "../../assets/icons/jumping-dog.png";
 
 function PageHeader(props) {
-    const { logged, logout, login, cart, reloadCart } = useStore(state => ({ logged: state.logged, logout: state.logout, cart: state.cart, reloadCart: state.reloadCart }));
-    const [profilePopover, setProfilePopover] = useState(false);
-
-    useEffect(()=>{
-        reloadCart()
-    }, [])
+    const { logged, logout, login, cart } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart}));
 
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -47,14 +42,17 @@ function PageHeader(props) {
                                 <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>
                                     <li><hr className="dropdown-divider" /></li>
-                                    <li><Link onChange={()=>{logout()}} className="dropdown-item" to="/login">Sair</Link></li>
+                                    <li><button onClick={()=>{logout()}} className="dropdown-item">Sair</button></li>
                                 </ul>
                             </li>
                             :
                             <li className="nav-item">
-                                <Link className="nav-link" to="/login">
+                                {/* <Link className="nav-link" to="/login">
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
-                                </Link>
+                                </Link> */}
+                                <div type="button" onClick={() => {login("xxxxxx")}} className="nav-link">
+                                    <i className="bi bi-person-circle fs-4 position-relative"></i>
+                                </div>
                             </li>
                         }
                     </ul>

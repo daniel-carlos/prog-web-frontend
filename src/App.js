@@ -1,6 +1,8 @@
 import './App.css';
 import PageHeader from './components/common/PageHeader';
 
+import Persist from './components/common/Persist';
+
 import HomePage from './screens/home';
 import LoginPage from './screens/login';
 import ProductPage from './screens/product';
@@ -18,10 +20,22 @@ import {
 } from "react-router-dom";
 import { useStore } from "./context/context";
 
+
+
 function App() {
+  const logged = useStore(state=>state.logged);
+  
+  const requireLogin = (redirectTo) => {
+      if(!logged){
+        return <Redirect to={redirectTo}></Redirect>
+      }else{
+        return null;
+      }
+  }
 
   return (
     <div className="App">
+      <Persist></Persist>
       <Router>
         <PageHeader></PageHeader>
 
@@ -50,7 +64,7 @@ function App() {
           <Route
             path="/meus-pedidos"
             render={() => {
-              return <MyOrders></MyOrders>
+              return logged? <MyOrders></MyOrders> : <Redirect to="/"></Redirect>
             }}
           />
 

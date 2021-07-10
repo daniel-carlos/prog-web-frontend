@@ -1,22 +1,19 @@
 import create from 'zustand'
+import { api } from '../api/backend';
 import { getCookie, setCookie } from "./cookie";
 
 export const useStore = create(set => ({
-    username: false,
-    isLoggedIn: () => {
-        let token = getCookie("tw1.tkn");
-        console.log("Token", token);
-        return token !== "";
-    },
+    token: "",
+    setToken: "",
     logged: false,
     login: (token) => {
-        setCookie("tw1.tkn", token, 1);
-        set(state => ({ logged: true }))
+        set(state => ({ logged: true, token: token }))
     },
     logout: () => {
-        setCookie("tw1.tkn", "", 0);
-        set(state => ({ logged: false }))
+        set(state => ({ logged: false, token: null }))
     },
+    
+    
     cart: [],
     reloadCart: () => {
         //load cart from cookies
@@ -25,7 +22,7 @@ export const useStore = create(set => ({
         try {
             _cart = JSON.parse(_cart_str)
         } catch (error) {
-            console.log("cookie cart");
+
         }
         set(state => ({ cart: _cart }));
     },
@@ -37,13 +34,11 @@ export const useStore = create(set => ({
         //load cart from cookies
         let _cart_str = getCookie("pw1.cart");
         let _cart = []
-
         try {
             _cart = JSON.parse(_cart_str)
         } catch (error) {
-            console.log("cookie cart");
-        }
 
+        }
         let insertNew = true;
         _cart = _cart.map((p, i) => {
             if (p.pid == product_id) {
@@ -53,13 +48,10 @@ export const useStore = create(set => ({
                 return p;
             }
         })
-
         if (insertNew === true) {
             _cart = [..._cart, { pid: product_id, q: 1 }]
         }
-
         set(state => ({ cart: _cart }));
-        setCookie("pw1.cart", JSON.stringify(_cart.sort((a, b) => a - b)))
-        console.log("Cart", getCookie("pw1.cart"))
+        setCookie("pw1.cart", JSON.stringify(_cart.sort((a, b) => a - b)));
     }
 }))
