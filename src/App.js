@@ -20,69 +20,84 @@ import {
 } from "react-router-dom";
 import { useStore } from "./context/context";
 
-
+const getCookie = (cname) => {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+      }
+  }
+  return "";
+}
 
 function App() {
-  const logged = useStore(state=>state.logged);
-  
-  const requireLogin = (redirectTo) => {
-      if(!logged){
-        return <Redirect to={redirectTo}></Redirect>
-      }else{
-        return null;
-      }
+  const logged = useStore(state => state.logged);
+
+  const PrivateRoute = ({ children, ...rest }) => {
+    
+    return (<Route {...rest} render={
+      ({ location }) => getCookie("pw_tkn").length>0 ?
+        (children) :
+        (<Redirect to={{ pathname: '/login', state: { from: location } }} />)} />
+    );
   }
 
   return (
     <div className="App">
-      <Persist></Persist>
-      <Router>
-        <PageHeader></PageHeader>
+      <Persist>
+        <Router>
+          <PageHeader></PageHeader>
+          <Switch>
+            <Route
+              path="/login"
+              render={() => {
+                return <LoginPage></LoginPage>
+              }}
+            />
 
-        <Switch>
-          <Route
-            path="/login"
-            render={() => {
-              return <LoginPage></LoginPage>
-            }}
-          />
+            <Route
+              path={`/product/:productId`}
+              render={() => {
+                return <ProductPage></ProductPage>
+              }}
+            />
 
-          <Route
-            path={`/product/:productId`}
-            render={() => {
-              return <ProductPage></ProductPage>
-            }}
-          />
+            <Route
+              path="/lista"
+              render={() => {
+                return <ProductList></ProductList>
+              }}
+            />
 
-          <Route
-            path="/lista"
-            render={() => {
-              return <ProductList></ProductList>
-            }}
-          />
+            <PrivateRoute
+              path="/meus-pedidos"
+            >
+              <MyOrders></MyOrders>
+            </PrivateRoute>
 
-          <Route
-            path="/meus-pedidos"
-            render={() => {
-              return logged? <MyOrders></MyOrders> : <Redirect to="/"></Redirect>
-            }}
-          />
+            <Route
+              path="/carrinho"
+              render={() => {
+                return <CartPage></CartPage>
+              }}
+            />
 
-          <Route
-            path="/carrinho"
-            render={() => {
-              return <CartPage></CartPage>
-            }}
-          />
+            <Route
+              path="/"
+              render={() => {
+                return <HomePage></HomePage>
+              }}
+            />
+          </Switch>
 
-          <Route
-            path="/"
-            render={() => {
-              return <HomePage></HomePage>
-            }}
-          />
-        </Switch>
-      </Router>
+        </Router>
+      </Persist>
     </div>
   );
 }

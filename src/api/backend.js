@@ -1,8 +1,7 @@
-import {create} from "apisauce"
-
-const version = "v1"
+import {create} from "apisauce";
+import env from "react-dotenv";
 
 export const api = create({
-    baseURL: `http://localhost:5005/${version}/`,
+    baseURL: `${env.BACKEND_HOST}:${env.BACKEND_PORT}/${env.BACKEND_VERSION}/`,
     headers: { Accept: 'application/vnd.github.v3+json'},
-})
+});

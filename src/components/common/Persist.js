@@ -56,7 +56,7 @@ function Persist(props) {
         save();
     }, [logged])
 
-    return <></>;
+    return <>{props.children}</>;
 }
 
 export default Persist;
