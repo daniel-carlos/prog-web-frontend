@@ -12,46 +12,25 @@ export const useStore = create(set => ({
     logout: () => {
         set(state => ({ logged: false, token: null }))
     },
-    
-    
-    cart: [],
-    reloadCart: () => {
-        //load cart from cookies
-        let _cart_str = getCookie("pw1.cart");
-        let _cart = []
-        try {
-            _cart = JSON.parse(_cart_str)
-        } catch (error) {
 
-        }
+
+    cart: {},
+    setCart: (_cart) => {
         set(state => ({ cart: _cart }));
     },
     clearCart: () => {
-        set(state => ({ cart: [] }));
-        setCookie("pw1.cart", []);
+        set({ cart: {} })
     },
-    addCart: (product_id) => {
-        //load cart from cookies
-        let _cart_str = getCookie("pw1.cart");
-        let _cart = []
-        try {
-            _cart = JSON.parse(_cart_str)
-        } catch (error) {
-
+    addCart: (product_id, amount, _cart) => {
+        const propName = `${product_id}`;
+        const value = _cart[propName] != null ? parseInt(_cart[propName]) : 0;
+        _cart[propName] = value + amount;
+        return _cart;
+    },
+    cartCount: (_cart) => {
+        let sum = 0;
+        for (const key in _cart){
+            console.log(`${key}: ${_cart[key]}`);
         }
-        let insertNew = true;
-        _cart = _cart.map((p, i) => {
-            if (p.pid == product_id) {
-                insertNew = false;
-                return { ...p, q: p.q + 1 };
-            } else {
-                return p;
-            }
-        })
-        if (insertNew === true) {
-            _cart = [..._cart, { pid: product_id, q: 1 }]
-        }
-        set(state => ({ cart: _cart }));
-        setCookie("pw1.cart", JSON.stringify(_cart.sort((a, b) => a - b)));
     }
 }))

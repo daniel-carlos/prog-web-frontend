@@ -25,38 +25,43 @@ const getCookie = (cname) => {
     return "";
 }
 
-function Persist(props) {
-    const logged = useStore(s => s.logged);
-    const token = useStore(s => s.token);
-    const login = useStore(s => s.login);
-    const logout = useStore(s => s.logout);
+
+const loadCart = () => {
+    const _scart = getCookie("pw_cart");
+    if (_scart.length > 0) {
+        return JSON.parse(_scart)
+    } else {
+        return {}
+    }
+}
+
+const saveCart = (_cart) => {
+    setCookie(JSON.stringify(_cart));
+}
+
+
+function PersistCart(props) {
+    const state = useStore();
 
     useLayoutEffect(() => {
-        //Login
-        const _token = getCookie("pw_tkn");
-        console.log("LOAD", _token);
-        if (_token.length > 0) {
-            console.log("Logado Sim");
-            login(_token);
-        } else {
-            console.log("Não Logado");
-            logout();
+        const cart_str = getCookie("pw_cart");
+        if (cart_str == {} || cart_str == null) {
+            state.setCart({});
+        }else{
+            state.setCart(JSON.parse(cart_str));
         }
     }, []);
 
     useEffect(() => {
-        const save = () => {
-            console.log("SAVE", logged);
-            if (logged) {
-                setCookie("pw_tkn", token, 1);
-            } else {
-                setCookie("pw_tkn", "", -999);
-            }
+        if (state.cart == {}) {
+            setCookie("pw_cart", "", -9999);
+        } else {
+            setCookie("pw_cart", JSON.stringify(state.cart), 1);
         }
-        save();
-    }, [logged]);
+    }, [state])
 
-    return <>{props.children}</>;
+
+    return <></>;
 }
 
-export default Persist;
+export default PersistCart;

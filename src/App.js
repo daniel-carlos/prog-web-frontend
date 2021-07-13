@@ -2,6 +2,7 @@ import './App.css';
 import PageHeader from './components/common/PageHeader';
 
 import Persist from './components/common/Persist';
+import PersistCart from './components/common/PersistCart';
 
 import HomePage from './screens/home';
 import LoginPage from './screens/login';
@@ -25,13 +26,13 @@ const getCookie = (cname) => {
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
   for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-      }
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
   }
   return "";
 }
@@ -40,9 +41,9 @@ function App() {
   const logged = useStore(state => state.logged);
 
   const PrivateRoute = ({ children, ...rest }) => {
-    
+
     return (<Route {...rest} render={
-      ({ location }) => getCookie("pw_tkn").length>0 ?
+      ({ location }) => getCookie("pw_tkn").length > 0 ?
         (children) :
         (<Redirect to={{ pathname: '/login', state: { from: location } }} />)} />
     );
@@ -50,54 +51,54 @@ function App() {
 
   return (
     <div className="App">
-      <Persist>
-        <Router>
-          <PageHeader></PageHeader>
-          <Switch>
-            <Route
-              path="/login"
-              render={() => {
-                return <LoginPage></LoginPage>
-              }}
-            />
+      <Persist></Persist>
+      <PersistCart></PersistCart>
+      <Router>
+        <PageHeader></PageHeader>
+        <Switch>
+          <Route
+            path="/login"
+            render={() => {
+              return <LoginPage></LoginPage>
+            }}
+          />
 
-            <Route
-              path={`/product/:productId`}
-              render={() => {
-                return <ProductPage></ProductPage>
-              }}
-            />
+          <Route
+            path={`/product/:productId`}
+            render={() => {
+              return <ProductPage></ProductPage>
+            }}
+          />
 
-            <Route
-              path="/lista"
-              render={() => {
-                return <ProductList></ProductList>
-              }}
-            />
+          <Route
+            path="/lista"
+            render={() => {
+              return <ProductList></ProductList>
+            }}
+          />
 
-            <PrivateRoute
-              path="/meus-pedidos"
-            >
-              <MyOrders></MyOrders>
-            </PrivateRoute>
+          <PrivateRoute
+            path="/meus-pedidos"
+          >
+            <MyOrders></MyOrders>
+          </PrivateRoute>
 
-            <Route
-              path="/carrinho"
-              render={() => {
-                return <CartPage></CartPage>
-              }}
-            />
+          <Route
+            path="/carrinho"
+            render={() => {
+              return <CartPage></CartPage>
+            }}
+          />
 
-            <Route
-              path="/"
-              render={() => {
-                return <HomePage></HomePage>
-              }}
-            />
-          </Switch>
+          <Route
+            path="/"
+            render={() => {
+              return <HomePage></HomePage>
+            }}
+          />
+        </Switch>
 
-        </Router>
-      </Persist>
+      </Router>
     </div>
   );
 }

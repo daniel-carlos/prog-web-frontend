@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useDebugValue } from 'react';
 import { api } from "../../api/backend";
 import { Link } from "react-router-dom";
 
@@ -6,9 +6,12 @@ import { useStore } from "../../context/context";
 
 function HomePage(props) {
     const [products, setProducts] = useState([]);
-    const addCart = useStore(store => store.addCart);
-    const clearCart = useStore(store => store.clearCart);
+    const addCart = useStore(state => state.addCart);
+    const setCart = useStore(state => state.setCart);
+    const cart = useStore(state => state.cart);
+    const cartCount = useStore(state => state.cartCount);
 
+    useDebugValue(`Cart ${cart}`)
     useEffect(async () => {
         const resp = await api.get("/product/list?size=12");
         if (resp.ok) {
@@ -30,7 +33,11 @@ function HomePage(props) {
                     <Link 
                     to="/" //TODO: mudar para carrinho
                     onClick={()=>{
-                        addCart(p.id)
+                        const c = addCart(p.id, 1, cart);
+                        console.log("C", c);
+                        setCart(c);
+                        console.log("Cart", cart);
+                        cartCount(c);
                     }}
                     className="btn btn-primary"
                     >Comprar</Link>
