@@ -4,10 +4,19 @@ import { useStore } from "../../context/context";
 import icon from "../../assets/icons/jumping-dog.png";
 
 function PageHeader(props) {
-    const { logged, logout, login, cart, cartCount } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart, cartCount: state.cartCount}));
+    const { logged, logout, login, cart } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart }));
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        let count = 0;
+        Object.keys(cart).map((c,i) => {
+            count += parseInt(cart[c]);
+        });
+        setCartCount(count);
+    });
 
     return (
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
+        <nav className="navbar navbar-expand navbar-dark bg-dark sticky-top">
             <div className="container">
                 <Link className="navbar-brand" to="/">
                     <div className="d-flex">
@@ -26,9 +35,9 @@ function PageHeader(props) {
                             <Link className="nav-link" to="/carrinho">
                                 <i className="bi bi-cart-fill fs-4 position-relative">
                                     {
-                                        cartCount(cart) > 0 &&
+                                        cartCount > 0 &&
                                         <span style={{ fontSize: "50%" }} className="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {cartCount(cart)}
+                                            {cartCount}
                                         </span>
                                     }
                                 </i>
@@ -42,7 +51,7 @@ function PageHeader(props) {
                                 <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>
                                     <li><hr className="dropdown-divider" /></li>
-                                    <li><button onClick={()=>{logout()}} className="dropdown-item">Sair</button></li>
+                                    <li><button onClick={() => { logout() }} className="dropdown-item">Sair</button></li>
                                 </ul>
                             </li>
                             :

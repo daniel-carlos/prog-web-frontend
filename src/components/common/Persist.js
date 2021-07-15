@@ -38,20 +38,15 @@ function Persist(props) {
         const _token = getCookie("pw_tkn");
         const _user_id = getCookie("pw_uid");
         const _isAdmin = getCookie("pw_adm");
-
-        console.log("LOAD", _token);
         if (_token.length > 0) {
-            console.log("Logado Sim");
             login(_token, _user_id, _isAdmin);
         } else {
-            console.log("Não Logado");
             logout();
         }
     }, []);
 
     useEffect(() => {
         const save = () => {
-            console.log("SAVE", logged);
             if (logged) {
                 setCookie("pw_tkn", token, 1);
                 setCookie("pw_uid", user_id, 1);

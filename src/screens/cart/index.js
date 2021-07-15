@@ -3,7 +3,7 @@ import { api } from '../../api/backend';
 import { useStore } from "../../context/context";
 
 function CartPage(props) {
-    const { cart, clearCart, addCart } = useStore(state => state);
+    const { cart, clearCart, setCartItem , setCart} = useStore(state => state);
     const [products, setProducts] = useState([]);
 
     useEffect(async () => {
@@ -37,17 +37,16 @@ function CartPage(props) {
                     <div className="ms-auto">
                         <form>
                             <div className="form-group">
-                                <label for={`input-${product.id}`}>Quantidade</label>
+                                <label htmlFor={`input-${product.id}`}>Quantidade</label>
                                 <input
                                     type="number"
                                     className="form-control"
                                     id={`input-${product.id}`}
                                     aria-describedby="Quantidade"
-                                    placeholder={1}
                                     min={0}
                                     value={amount}
                                     onChange={({target: {value}}) => {
-                                        console.log(value);
+                                        setCart(setCartItem(product.id, value, cart));
                                     }}
                                 />
                             </div>

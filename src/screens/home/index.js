@@ -34,9 +34,7 @@ function HomePage(props) {
                     to="/" //TODO: mudar para carrinho
                     onClick={()=>{
                         const c = addCart(p.id, 1, cart);
-                        console.log("C", c);
                         setCart(c);
-                        console.log("Cart", cart);
                         cartCount(c);
                     }}
                     className="btn btn-primary"

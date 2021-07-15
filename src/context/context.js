@@ -23,16 +23,21 @@ export const useStore = create(set => ({
     clearCart: () => {
         set({ cart: {} })
     },
-    addCart: (product_id, amount, _cart) => {
+    addCart: (product_id, increase, _cart) => {
         const propName = `${product_id}`;
         const value = _cart[propName] != null ? parseInt(_cart[propName]) : 0;
-        _cart[propName] = value + amount;
+        _cart[propName] = value + increase;
+        return _cart;
+    },
+    setCartItem: (product_id, amount, _cart) => {
+        const propName = `${product_id}`;
+        const value = _cart[propName] != null ? parseInt(_cart[propName]) : 0;
+        _cart[propName] = amount;
         return _cart;
     },
     cartCount: (_cart) => {
         let sum = 0;
         for (const key in _cart) {
-            console.log(`${key}: ${_cart[key]}`);
             sum = sum + _cart[key];
         }
         return sum;
