@@ -1,53 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useDebugValue } from 'react';
 import { api } from '../../api/backend';
 import { useStore } from "../../context/context";
 
 function CartPage(props) {
-    const { cart, clearCart } = useStore(state => state);
+    const { cart, clearCart, addCart } = useStore(state => state);
     const [products, setProducts] = useState([]);
 
     useEffect(async () => {
-        const resp = await api.post('/product/list', {
-            ids: cart.map((cp, i) => cp.pid)
-        });
-        setProducts(resp.data.products);
-    }, []);
+        if (Object.keys(cart).length > 0) {
+            const resp = await api.post('/product/list', {
+                ids: Object.keys(cart).map((cp, i) => cp)
+            });
+            setProducts(resp.data.products);
+        }
+    }, [cart]);
 
-    const getProductFromList = (id, plist) => {
-        let obj = undefined;
-        plist.forEach((p, i, a) => {
-            if (id === p.id) {
-                obj = p;
-            }
-        });
-        return obj;
+    const ItemCard = ({ product }) => {
+        const amount = cart[product.id];
+
+        return (
+            <div className="card mb-2">
+                <div className="card-header d-flex justify-content-between">
+                    <div className="fs-4">
+                        {product.name}
+                    </div>
+                    <div>
+                        <div className="fs-4">{`${amount}x`}</div>
+                    </div>
+                </div>
+                <div className="card-body d-flex">
+                    <img width={100} height={100} className="" src={product.thumb} alt="Card image cap" />
+                    <div className="ms-3">
+                        <h5 className="card-title text-success">{`R$${product.price}`}</h5>
+                        <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    </div>
+                    <div className="ms-auto">
+                        <form>
+                            <div className="form-group">
+                                <label for={`input-${product.id}`}>Quantidade</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id={`input-${product.id}`}
+                                    aria-describedby="Quantidade"
+                                    placeholder={1}
+                                    min={0}
+                                    value={amount}
+                                    onChange={({target: {value}}) => {
+                                        console.log(value);
+                                    }}
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const totalPrice = () => {
-        if (products.length === 0) return 0;
-        
-        let _sum = 0;
-        
-        cart.map((cp, i) => {
-            const p = getProductFromList(cp.pid, products);
-            const ammount = cp.q;
-            _sum += p.price * ammount;
+        let sum = 0;
+        products.forEach((p) => {
+            sum += p.price * cart[p.id];
         });
-        
-        return _sum;
+        return sum;
     }
-    
+
     const totalCount = () => {
-        if (products.length === 0) return 0;
-
-        let _sum = 0;
-
-        cart.map((cp, i) => {
-            const ammount = cp.q;
-            _sum += ammount;
+        let count = 0;
+        products.forEach((p) => {
+            count += cart[p.id];
         });
-
-        return _sum;
+        return count;
     }
 
     return (
@@ -56,39 +80,20 @@ function CartPage(props) {
 
             {
                 products.length > 0 ?
-                <div>
-                    {Object.keys(cart).map((cp, i) => {
-                        const p = getProductFromList(cp.pid, products);
-                        const ammount = cp.q;
-
-                        return (
-                            <div key={i}>
-                                <div className="card mb-2">
-                                    <div className="card-header d-flex justify-content-between">
-                                        <div className="fs-4">
-                                            {p.name}
-                                        </div>
-                                        <div>
-                                            <div className="fs-4">{`${ammount}x`}</div>
-                                        </div>
-                                    </div>
-                                    <div className="card-body d-flex">
-                                        <img width={100} height={100} className="" src={p.thumb} alt="Card image cap" />
-                                        <div className="ms-3">
-                                            <h5 className="card-title text-success">{`R$${p.price}`}</h5>
-                                            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        </div>
-                                    </div>
+                    <div>
+                        {products.map((p, i) => {
+                            return (
+                                <div key={i}>
+                                    <ItemCard product={p}></ItemCard>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
-                :
-                <div>Seu carrinho está vazio</div>
+                            );
+                        })}
+                    </div>
+                    :
+                    <div>Seu carrinho está vazio</div>
             }
 
-            <div className="mt-3 d-flex justify-content-between">
+            <div className="mt-3 mb-5 d-flex justify-content-between">
                 <button
                     className="btn btn-primary"
                     disabled={products.length === 0}
