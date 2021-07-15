@@ -12,10 +12,6 @@ function LoginPage(props) {
     const login = useStore(store => store.login);
     const logged = useStore(state => state.logged)
 
-    // useEffect(()=>{
-    //     setLogged(isLoggedIn());
-    // })
-
     const tryLogin = async () => {
         setLoading(true);
         const resp = await api.post("/login", { username: user.username, password: user.password });
@@ -23,7 +19,7 @@ function LoginPage(props) {
             if (resp.data.ok) {
                 setHasError(false);
                 setErrorMsg("");
-                login(resp.data.token);
+                login(resp.data.token, resp.data.user_id, resp.data.admin);
                 setLoading(true);
             } else {
                 setErrorMsg(resp.data.msg);

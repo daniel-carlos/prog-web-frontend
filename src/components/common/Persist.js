@@ -30,14 +30,19 @@ function Persist(props) {
     const token = useStore(s => s.token);
     const login = useStore(s => s.login);
     const logout = useStore(s => s.logout);
+    const user_id = useStore(s => s.user_id);
+    const isAdmin = useStore(s => s.isAdmin);
 
     useLayoutEffect(() => {
         //Login
         const _token = getCookie("pw_tkn");
+        const _user_id = getCookie("pw_uid");
+        const _isAdmin = getCookie("pw_adm");
+
         console.log("LOAD", _token);
         if (_token.length > 0) {
             console.log("Logado Sim");
-            login(_token);
+            login(_token, _user_id, _isAdmin);
         } else {
             console.log("Não Logado");
             logout();
@@ -49,12 +54,16 @@ function Persist(props) {
             console.log("SAVE", logged);
             if (logged) {
                 setCookie("pw_tkn", token, 1);
+                setCookie("pw_uid", user_id, 1);
+                setCookie("pw_adm", isAdmin, 1);
             } else {
                 setCookie("pw_tkn", "", -999);
+                setCookie("pw_uid", "", -999);
+                setCookie("pw_adm", "", -999);
             }
         }
         save();
-    }, [logged]);
+    }, [logged, user_id, isAdmin]);
 
     return <>{props.children}</>;
 }

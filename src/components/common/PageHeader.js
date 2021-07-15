@@ -4,7 +4,7 @@ import { useStore } from "../../context/context";
 import icon from "../../assets/icons/jumping-dog.png";
 
 function PageHeader(props) {
-    const { logged, logout, login, cart } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart}));
+    const { logged, logout, login, cart, cartCount } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart, cartCount: state.cartCount}));
 
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -26,9 +26,9 @@ function PageHeader(props) {
                             <Link className="nav-link" to="/carrinho">
                                 <i className="bi bi-cart-fill fs-4 position-relative">
                                     {
-                                        cart.length > 0 &&
+                                        cartCount(cart) > 0 &&
                                         <span style={{ fontSize: "50%" }} className="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {cart.length}
+                                            {cartCount(cart)}
                                         </span>
                                     }
                                 </i>
@@ -47,12 +47,9 @@ function PageHeader(props) {
                             </li>
                             :
                             <li className="nav-item">
-                                {/* <Link className="nav-link" to="/login">
+                                <Link className="nav-link" to="/login">
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
-                                </Link> */}
-                                <div type="button" onClick={() => {login("xxxxxx")}} className="nav-link">
-                                    <i className="bi bi-person-circle fs-4 position-relative"></i>
-                                </div>
+                                </Link>
                             </li>
                         }
                     </ul>

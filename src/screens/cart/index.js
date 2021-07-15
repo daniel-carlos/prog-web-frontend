@@ -57,7 +57,7 @@ function CartPage(props) {
             {
                 products.length > 0 ?
                 <div>
-                    {cart.map((cp, i) => {
+                    {Object.keys(cart).map((cp, i) => {
                         const p = getProductFromList(cp.pid, products);
                         const ammount = cp.q;
 

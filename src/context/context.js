@@ -3,14 +3,16 @@ import { api } from '../api/backend';
 import { getCookie, setCookie } from "./cookie";
 
 export const useStore = create(set => ({
+    user_id: "",
+    isAdmin: "",
     token: "",
     setToken: "",
     logged: false,
-    login: (token) => {
-        set(state => ({ logged: true, token: token }))
+    login: (token, user_id, isAdmin) => {
+        set(state => ({ logged: true, token: token, user_id: user_id, isAdmin: isAdmin }))
     },
     logout: () => {
-        set(state => ({ logged: false, token: null }))
+        set(state => ({ logged: false, token: null, user_id: null, isAdmin: null }))
     },
 
 
@@ -29,8 +31,10 @@ export const useStore = create(set => ({
     },
     cartCount: (_cart) => {
         let sum = 0;
-        for (const key in _cart){
+        for (const key in _cart) {
             console.log(`${key}: ${_cart[key]}`);
+            sum = sum + _cart[key];
         }
+        return sum;
     }
 }))

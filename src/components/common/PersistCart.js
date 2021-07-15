@@ -45,11 +45,16 @@ function PersistCart(props) {
 
     useLayoutEffect(() => {
         const cart_str = getCookie("pw_cart");
-        if (cart_str == {} || cart_str == null) {
+        try {
+            if (cart_str == {} || cart_str == null) {
+                state.setCart({});
+            } else {
+                state.setCart(JSON.parse(cart_str));
+            }
+        } catch (error) {
             state.setCart({});
-        }else{
-            state.setCart(JSON.parse(cart_str));
         }
+
     }, []);
 
     useEffect(() => {
