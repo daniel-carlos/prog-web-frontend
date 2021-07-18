@@ -41,5 +41,5 @@ export const useStore = create(set => ({
             sum = sum + _cart[key];
         }
         return sum;
-    }
+    },
 }))
