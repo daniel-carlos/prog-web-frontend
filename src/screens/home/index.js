@@ -7,9 +7,7 @@ import { useStore } from "../../context/context";
 function HomePage(props) {
     const [products, setProducts] = useState([]);
     const addCart = useStore(state => state.addCart);
-    const setCart = useStore(state => state.setCart);
     const cart = useStore(state => state.cart);
-    const cartCount = useStore(state => state.cartCount);
 
     useDebugValue(`Cart ${cart}`)
     useEffect(async () => {
@@ -34,8 +32,6 @@ function HomePage(props) {
                     to="/" //TODO: mudar para carrinho
                     onClick={()=>{
                         const c = addCart(p.id, 1, cart);
-                        setCart(c);
-                        cartCount(c);
                     }}
                     className="btn btn-primary"
                     >Comprar</Link>

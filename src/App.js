@@ -10,6 +10,7 @@ import ProductPage from './screens/product';
 import CartPage from './screens/cart';
 import MyOrders from './screens/my_orders';
 import ProductList from './screens/product_list';
+import PageCadastro from './screens/cadastro';
 
 import {
   BrowserRouter as Router,
@@ -67,6 +68,13 @@ function App() {
             path={`/product/:productId`}
             render={() => {
               return <ProductPage></ProductPage>
+            }}
+          />
+
+          <Route
+            path={`/cadastro`}
+            render={() => {
+              return <PageCadastro></PageCadastro>
             }}
           />
 

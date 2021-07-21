@@ -3,29 +3,42 @@ import { api } from "../../api/backend";
 import { useStore, isLoggedIn } from "../../context/context";
 import { Redirect, Link } from "react-router-dom";
 
-function LoginPage(props) {
+function PageCadastro(props) {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [hasError, setHasError] = useState(false);
-    const [user, setUser] = useState({ username: "", password: "" });
+    const [user, setUser] = useState({ username: "", password: "", email: "" });
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const login = useStore(store => store.login);
-    const logged = useStore(state => state.logged)
+    const logged = useStore(state => state.logged);
 
-    const tryLogin = async () => {
+    const tryCreateUser = async () => {
+        if (confirmPassword != user.password) {
+            setHasError(true);
+            setErrorMsg("As senhas devem ser iguais");
+            return;
+        }
+        setHasError(false);
+        setErrorMsg("");
+
         setLoading(true);
-        const resp = await api.post("/login", { username: user.username, password: user.password });
+
+        const resp = await api.post("/create_user", {
+            username: user.username,
+            password: user.password,
+            email: user.email,
+        });
+
         if (resp.ok) {
-            if (resp.data.ok) {
-                setHasError(false);
-                setErrorMsg("");
-                login(resp.data.token, resp.data.user_id, resp.data.admin);
-                setLoading(true);
+            const data = resp.data;
+            if (data.ok) {
+                console.log(`Usuário criado com ID ${data.user_id}.`)
             } else {
-                setErrorMsg(resp.data.msg);
                 setHasError(true);
+                setErrorMsg(`Erro código ${data.code}`);
             }
         }
+
         setLoading(false);
     }
 
@@ -33,6 +46,7 @@ function LoginPage(props) {
         <div className="container">
             {logged === true && <Redirect to="/" />}
 
+            <h2>Cadastre-se</h2>
             {hasError === true && <div className='text-danger'>{errorMsg}</div>}
             <div className="mb-3">
                 <label htmlFor="login-user" className="form-label">Usuário</label>
@@ -43,6 +57,18 @@ function LoginPage(props) {
                     placeholder="seu nome de usuário"
                     onChange={({ target }) => {
                         setUser({ ...user, username: target.value });
+                    }}
+                />
+            </div>
+            <div className="mb-3">
+                <label htmlFor="login-email" className="form-label">Email</label>
+                <input
+                    type="email"
+                    className="form-control"
+                    id="login-email"
+                    placeholder="seu nome de usuário"
+                    onChange={({ target }) => {
+                        setUser({ ...user, email: target.value });
                     }}
                 />
             </div>
@@ -58,12 +84,24 @@ function LoginPage(props) {
                     }}
                 />
             </div>
+            <div className="mb-3">
+                <label htmlFor="login-pass-conf" className="form-label">Confirme sua senha</label>
+                <input
+                    type="password"
+                    className="form-control"
+                    id="login-pass-conf"
+                    placeholder=""
+                    onChange={({ target: { value } }) => {
+                        setConfirmPassword(value);
+                    }}
+                />
+            </div>
             <div>
                 {
                     loading === false ?
                         <button type="submit" className="btn btn-primary mb-3"
                             onClick={() => {
-                                tryLogin();
+                                tryCreateUser();
                             }}
                         >
                             Entrar
@@ -74,12 +112,10 @@ function LoginPage(props) {
                             Entrando...
                         </button>
                 }
-                <Link to="/cadastro" type="submit" className="btn btn-secondary mb-3 ms-3">
-                    Criar Conta
-                </Link>
             </div>
         </div>
+
     );
 }
 
-export default LoginPage;
+export default PageCadastro;

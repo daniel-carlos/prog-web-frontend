@@ -129,7 +129,7 @@ function ProductPage(props) {
                 <div>
                     <h1>{produto.name}</h1>
                     <div className="d-flex">
-                        <img width={500} src={produto.image} />
+                        <img className="product-img-main" width={500} src={produto.image} />
                         <div>
                             <div className="valor-1 fs-1 fw-bold">R$ {produto.price}</div>
                             <p className="mt-3">

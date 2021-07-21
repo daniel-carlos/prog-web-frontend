@@ -52,7 +52,7 @@ function PersistCart(props) {
                 state.setCart(JSON.parse(cart_str));
             }
         } catch (error) {
-            state.setCart({});
+            state.clearCart();
         }
 
     }, []);

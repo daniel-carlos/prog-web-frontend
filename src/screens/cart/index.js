@@ -4,7 +4,7 @@ import { useStore } from "../../context/context";
 import { useModalStore } from "../../context/modalContext";
 
 function CartPage(props) {
-    const { cart, clearCart, setCartItem, setCart } = useStore(state => state);
+    const { cart, clearCart, setCartItem } = useStore(state => state);
     const [products, setProducts] = useState([]);
     const modalContext = useModalStore();
 
@@ -48,11 +48,11 @@ function CartPage(props) {
                                     min={0}
                                     value={amount}
                                     onChange={({ target: { value } }) => {
-                                        if (value > 0) {
-                                            setCart(setCartItem(product.id, value, cart));
-                                        }else{
-                                            modalContext.showRemoveCartItemDialog(true);
-                                        }
+                                        // if (value > 0) {
+                                        //     setCart(setCartItem(product.id, value, cart));
+                                        // }else{
+                                        //     modalContext.showRemoveCartItemDialog(true);
+                                        // }
                                     }}
                                 />
                             </div>

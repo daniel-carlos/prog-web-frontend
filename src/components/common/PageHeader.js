@@ -9,6 +9,7 @@ function PageHeader(props) {
 
     useEffect(() => {
         let count = 0;
+        console.log("Cart", cart)
         Object.keys(cart).map((c,i) => {
             count += parseInt(cart[c]);
         });
@@ -45,10 +46,10 @@ function PageHeader(props) {
                         </li>
                         {logged === true ?
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <Link to="#" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
-                                </a>
-                                <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
+                                </Link>
+                                <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>
                                     <li><hr className="dropdown-divider" /></li>
                                     <li><button onClick={() => { logout() }} className="dropdown-item">Sair</button></li>
@@ -68,5 +69,4 @@ function PageHeader(props) {
     );
 }
 
-{/* <i className="bi bi-person-circle fs-4 position-relative"></i> */ }
 export default PageHeader;

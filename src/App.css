@@ -1,3 +1,8 @@
 .valor-1{
     
 }
+
+
+.product-img-main{
+    object-fit: contain;
+}
