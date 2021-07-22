@@ -4,7 +4,7 @@ import { useStore } from "../../context/context";
 import { useModalStore } from "../../context/modalContext";
 
 function CartPage(props) {
-    const { cart, clearCart, setCartItem } = useStore(state => state);
+    const { cart, clearCart, setCartItem, removeProduct } = useStore(state => state);
     const [products, setProducts] = useState([]);
     const modalContext = useModalStore();
 
@@ -27,7 +27,16 @@ function CartPage(props) {
                         {product.name}
                     </div>
                     <div>
-                        <div className="fs-4">{`${amount}x`}</div>
+                        <div className="fs-4">
+                            {`${amount}x`}
+                            <button className="btn btn-secondary btn-sm ms-3"
+                                onClick={() => {
+                                    removeProduct(product.id);
+                                }}
+                            >
+                                <i className="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="card-body d-flex">
@@ -37,26 +46,29 @@ function CartPage(props) {
                         <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
                     </div>
                     <div className="ms-auto">
-                        <form>
-                            <div className="form-group">
-                                <label htmlFor={`input-${product.id}`}>Quantidade</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id={`input-${product.id}`}
-                                    aria-describedby="Quantidade"
-                                    min={0}
-                                    value={amount}
-                                    onChange={({ target: { value } }) => {
-                                        // if (value > 0) {
-                                        //     setCart(setCartItem(product.id, value, cart));
-                                        // }else{
-                                        //     modalContext.showRemoveCartItemDialog(true);
-                                        // }
+                        <div>
+                            <label htmlFor={`input-${product.id}`}>Unidades</label>
+                            <div className="d-flex">
+                                <button className="btn btn-primary btn-sm" disabled={amount <= 1}
+                                    onClick={() => {
+                                        setCartItem(product.id, amount - 1);
                                     }}
-                                />
+                                >
+                                    <i className="bi bi-dash"></i>
+                                </button>
+                                <span className="mx-3">{`${amount}`}</span>
+                                <button className="btn btn-primary btn-sm"
+                                    onClick={() => {
+                                        console.log(setCartItem);
+                                        setCartItem(product.id, amount + 1);
+                                    }}
+                                >
+                                    <i className="bi bi-plus"></i>
+
+                                </button>
                             </div>
-                        </form>
+                        </div>
+
                     </div>
                 </div>
             </div>

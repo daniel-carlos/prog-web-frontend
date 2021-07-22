@@ -18,11 +18,6 @@ export const useStore = create(set => ({
             store.isAdmin = isAdmin;
         })
     ),
-
-    // {
-    //     set(state => ({ logged: true, token: token, user_id: user_id, isAdmin: isAdmin }));
-
-    // },
     logout: () => {
         set(state => ({ logged: false, token: null, user_id: null, isAdmin: null }))
     },
@@ -35,6 +30,13 @@ export const useStore = create(set => ({
     setCart: (_cart) => {
         set({ cart: _cart })
     },
+    removeProduct: (product_id) => set(
+        produce((store) => {
+            const { cart } = store;
+            const propName = `${product_id}`;
+            delete(cart[propName]);
+        })
+    ),
     addCart: (product_id, increase) => set(
         produce((store) => {
             const { cart } = store;
@@ -43,12 +45,17 @@ export const useStore = create(set => ({
             cart[propName] = value + increase;
         })
     ),
-    setCartItem: (product_id, amount, _cart) => {
-        const propName = `${product_id}`;
-        const value = _cart[propName] != null ? parseInt(_cart[propName]) : 0;
-        _cart[propName] = amount;
-        return _cart;
-    },
+    setCartItem: (product_id, amount) => set(
+        produce((store) => {
+            const { cart } = store;
+            console.log("Cart antes", cart);
+            const propName = `${product_id}`;
+            const value = cart[propName] != null ? parseInt(cart[propName]) : 0;
+            console.log("valor", value);
+            cart[propName] = amount;
+            console.log("Cart depois", cart);
+        })
+    ),
     cartCount: () => set(
         produce((store) => {
             const { cart } = store;
