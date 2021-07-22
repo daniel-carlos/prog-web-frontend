@@ -32,6 +32,9 @@ export const useStore = create(set => ({
     clearCart: () => {
         set({ cart: {} })
     },
+    setCart: (_cart) => {
+        set({ cart: _cart })
+    },
     addCart: (product_id, increase) => set(
         produce((store) => {
             const { cart } = store;

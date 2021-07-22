@@ -41,14 +41,18 @@ const saveCart = (_cart) => {
 
 
 function PersistCart(props) {
-    const state = useStore();
+    const state = useStore(s => s);
 
     useLayoutEffect(() => {
         const cart_str = getCookie("pw_cart");
+        console.log("cart string", cart_str);
+        console.log(state.setCart);
         try {
-            if (cart_str == {} || cart_str == null) {
+            if (cart_str === {} || cart_str == null || cart_str == "") {
+                console.log("não tem cookie");
                 state.setCart({});
             } else {
+                console.log("Tem cookie sim", JSON.parse(cart_str));
                 state.setCart(JSON.parse(cart_str));
             }
         } catch (error) {
