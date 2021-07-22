@@ -146,7 +146,7 @@ function ProductPage(props) {
 
                         <ul className="list-group">
                             {fakeEvals.map((e, i) => {
-                                return <Eval e={e}></Eval>
+                                return <Eval key={i} e={e}></Eval>
                             })}
                         </ul>
 

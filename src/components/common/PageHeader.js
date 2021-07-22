@@ -9,8 +9,7 @@ function PageHeader(props) {
 
     useEffect(() => {
         let count = 0;
-        console.log("Cart", cart)
-        Object.keys(cart).map((c,i) => {
+        Object.keys(cart).map((c, i) => {
             count += parseInt(cart[c]);
         });
         setCartCount(count);
@@ -27,10 +26,8 @@ function PageHeader(props) {
                         </div>
                     </div>
                 </Link>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                
+                <div className="navbar" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li className="nav-item">
                             <Link className="nav-link" to="/carrinho">
@@ -44,6 +41,7 @@ function PageHeader(props) {
                                 </i>
                             </Link>
                         </li>
+
                         {logged === true ?
                             <li className="nav-item dropdown">
                                 <Link to="#" className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
