@@ -4,7 +4,7 @@ import { useStore } from "../../context/context";
 import icon from "../../assets/icons/jumping-dog.png";
 
 function PageHeader(props) {
-    const { logged, logout, login, cart } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart }));
+    const { logged, logout, login, cart, isAdmin } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart, isAdmin: state.isAdmin }));
     const [cartCount, setCartCount] = useState(0);
 
     useEffect(() => {
@@ -26,21 +26,42 @@ function PageHeader(props) {
                         </div>
                     </div>
                 </Link>
-                
+
                 <div className="navbar" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/carrinho">
-                                <i className="bi bi-cart-fill fs-4 position-relative">
-                                    {
-                                        cartCount > 0 &&
-                                        <span style={{ fontSize: "50%" }} className="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {cartCount}
-                                        </span>
-                                    }
-                                </i>
-                            </Link>
-                        </li>
+                        {
+                            !isAdmin &&
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/carrinho">
+                                    <i className="bi bi-cart-fill fs-4 position-relative">
+                                        {
+                                            cartCount > 0 &&
+                                            <span style={{ fontSize: "50%" }} className="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger">
+                                                {cartCount}
+                                            </span>
+                                        }
+                                    </i>
+                                </Link>
+                            </li>
+                        }
+
+                        {
+                            logged && isAdmin &&
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/admindashboard">
+                                    <i className="bi bi-graph-up fs-4 position-relative"></i>
+                                </Link>
+                            </li>
+                        }
+
+                        {
+                            logged && isAdmin &&
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/pedidos">
+                                    <i className="bi bi-cart-check-fill fs-4 position-relative"></i>
+                                </Link>
+                            </li>
+                        }
 
                         {logged === true ?
                             <li className="nav-item dropdown">
@@ -48,7 +69,7 @@ function PageHeader(props) {
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
                                 </Link>
                                 <ul style={{ transform: "translate(calc(-100% + 50px))" }} className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>
+                                    {!isAdmin && <li><Link className="dropdown-item" to="/meus-pedidos">Meus Pedidos</Link></li>}
                                     <li><hr className="dropdown-divider" /></li>
                                     <li><button onClick={() => { logout() }} className="dropdown-item">Sair</button></li>
                                 </ul>

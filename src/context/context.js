@@ -1,9 +1,6 @@
 import create from 'zustand';
 import produce from "immer";
 
-import { api } from '../api/backend';
-import { getCookie, setCookie } from "./cookie";
-
 export const useStore = create(set => ({
     user_id: "",
     isAdmin: "",
@@ -21,6 +18,8 @@ export const useStore = create(set => ({
     logout: () => {
         set(state => ({ logged: false, token: null, user_id: null, isAdmin: null }))
     },
+
+
 
 
     cart: {},
@@ -48,12 +47,9 @@ export const useStore = create(set => ({
     setCartItem: (product_id, amount) => set(
         produce((store) => {
             const { cart } = store;
-            console.log("Cart antes", cart);
             const propName = `${product_id}`;
             const value = cart[propName] != null ? parseInt(cart[propName]) : 0;
-            console.log("valor", value);
             cart[propName] = amount;
-            console.log("Cart depois", cart);
         })
     ),
     cartCount: () => set(

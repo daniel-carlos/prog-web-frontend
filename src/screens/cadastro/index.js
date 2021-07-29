@@ -32,7 +32,6 @@ function PageCadastro(props) {
         if (resp.ok) {
             const data = resp.data;
             if (data.ok) {
-                console.log(`Usuário criado com ID ${data.user_id}.`)
             } else {
                 setHasError(true);
                 setErrorMsg(`Erro código ${data.code}`);

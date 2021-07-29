@@ -11,6 +11,7 @@ import CartPage from './screens/cart';
 import MyOrders from './screens/my_orders';
 import ProductList from './screens/product_list';
 import PageCadastro from './screens/cadastro';
+import AdminDashboardPage from './screens/admin_dashboard';
 
 import {
   BrowserRouter as Router,
@@ -21,6 +22,7 @@ import {
   useRouteMatch
 } from "react-router-dom";
 import { useStore } from "./context/context";
+import AdminPedidosPage from './screens/admin_pedidos';
 
 const getCookie = (cname) => {
   let name = cname + "=";
@@ -40,9 +42,9 @@ const getCookie = (cname) => {
 
 function App() {
   const logged = useStore(state => state.logged);
+  const isAdmin = useStore(state => state.isAdmin);
 
   const PrivateRoute = ({ children, ...rest }) => {
-
     return (<Route {...rest} render={
       ({ location }) => getCookie("pw_tkn").length > 0 ?
         (children) :
@@ -50,11 +52,23 @@ function App() {
     );
   }
 
+  const AdminRoute = ({ children, ...rest }) => {
+    return (
+      <Route {...rest}
+        render={
+          ({ location }) => true ?
+            (children) :
+            (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
+        }
+      />
+    );
+  }
+
   return (
     <div className="App">
-      <Persist></Persist>
-      <PersistCart></PersistCart>
       <Router>
+        <Persist></Persist>
+        <PersistCart></PersistCart>
         <PageHeader></PageHeader>
         <Switch>
           <Route
@@ -85,6 +99,19 @@ function App() {
             }}
           />
 
+
+          <AdminRoute
+            path="/pedidos"
+          >
+            <AdminPedidosPage></AdminPedidosPage>
+          </AdminRoute>
+
+          <AdminRoute
+            path="/admindashboard"
+          >
+            <AdminDashboardPage></AdminDashboardPage>
+          </AdminRoute>
+
           <PrivateRoute
             path="/meus-pedidos"
           >
@@ -105,6 +132,7 @@ function App() {
             }}
           />
         </Switch>
+
 
       </Router>
     </div>

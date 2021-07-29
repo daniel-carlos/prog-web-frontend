@@ -27,17 +27,20 @@ function ProductPage(props) {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
 
-    useEffect(async () => {
-        setLoaded(false);
-        const resp = await api.get(`/product/${productId}`);
-        if (resp.data.ok === true) {
-            setProduto(resp.data.product);
-            setError(false)
-        }else{
-            setError(true)
-        }
-        setLoaded(true);
-    }, [])
+    useEffect(() => {
+        async function fetchData(){
+            setLoaded(false);
+            const resp = await api.get(`/product/${productId}`);
+            if (resp.data.ok === true) {
+                setProduto(resp.data.product);
+                setError(false)
+            }else{
+                setError(true)
+            }
+            setLoaded(true);
+        };
+        fetchData();
+    }, []);
 
     const Eval = ({ e }) => {
         return (

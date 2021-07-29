@@ -2,11 +2,13 @@ import React, { useState, useEffect, useDebugValue } from 'react';
 import { api } from '../../api/backend';
 import { useStore } from "../../context/context";
 import { useModalStore } from "../../context/modalContext";
+import { Link, Redirect } from "react-router-dom";
 
 function CartPage(props) {
-    const { cart, clearCart, setCartItem, removeProduct } = useStore(state => state);
+    const { cart, clearCart, setCartItem, removeProduct, user_id } = useStore(state => state);
     const [products, setProducts] = useState([]);
     const modalContext = useModalStore();
+    const [redirectMyOrders, setRedirectMyOrders] = useState(false);
 
     useEffect(async () => {
         if (Object.keys(cart).length > 0) {
@@ -22,7 +24,7 @@ function CartPage(props) {
 
         return (
             <div className="card mb-2">
-                <div className="card-header d-flex justify-content-between">
+               <div className="card-header d-flex justify-content-between">
                     <div className="fs-4">
                         {product.name}
                     </div>
@@ -59,7 +61,6 @@ function CartPage(props) {
                                 <span className="mx-3">{`${amount}`}</span>
                                 <button className="btn btn-primary btn-sm"
                                     onClick={() => {
-                                        console.log(setCartItem);
                                         setCartItem(product.id, amount + 1);
                                     }}
                                 >
@@ -115,8 +116,21 @@ function CartPage(props) {
         return count;
     }
 
+    const finishOrder = async () => {
+        const resp = await api.post("order/create", {
+            user_id: user_id,
+            cart: cart
+        });
+        if(resp.ok){
+            clearCart();
+            setRedirectMyOrders(true);
+        }
+    }
+
     return (
         <div className="container">
+            {redirectMyOrders && <Redirect to="meus-pedidos"/>}
+                
             <h1>Meu Carrinho</h1>
 
             {
@@ -135,13 +149,24 @@ function CartPage(props) {
             }
 
             <div className="mt-3 mb-5 d-flex justify-content-between">
-                <button
-                    className="btn btn-primary"
-                    disabled={products.length === 0}
-                    onClick={() => {
-                        clearCart()
-                    }}
-                >Limpar Carrinho</button>
+                <div>
+                    <button
+                        className="btn btn-primary"
+                        disabled={products.length === 0}
+                        onClick={() => {
+                            finishOrder();
+                        }}
+                    >
+                        Finalizar Compra
+                    </button>
+                    <button
+                        className="btn btn-danger ms-3"
+                        disabled={products.length === 0}
+                        onClick={() => {
+                            clearCart()
+                        }}
+                    >Limpar Carrinho</button>
+                </div>
                 <div className="fs-3 text-primary">
                     {"Total "}
                     <span className="fw-bold">{` R$${totalPrice().toFixed(2)} `}</span>
