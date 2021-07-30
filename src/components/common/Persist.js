@@ -35,9 +35,10 @@ function Persist(props) {
             // Login
             const _user = getCookie("pw_user");
             const _token = getCookie("pw_token");
-            if (_token != "" && _user != "") {
+            if (_token !== "" && _token != null && _token != "null" && _user !== "") {
                 store.login(JSON.parse(_token), JSON.parse(_user));
             }else{
+                store.logout();
                 store.setCart({});
             }
 
@@ -66,7 +67,7 @@ function Persist(props) {
         }
     }, [store]);
 
-    return <></>;
+    return <>{props.children}</>;
 }
 
 export default Persist;

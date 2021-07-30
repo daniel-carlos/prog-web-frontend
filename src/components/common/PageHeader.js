@@ -76,7 +76,7 @@ function PageHeader(props) {
                             </li>
                             :
                             <li className="nav-item">
-                                <Link className="nav-link" to="/login">
+                                <Link replace={true} className="nav-link" to="/login">
                                     <i className="bi bi-person-circle fs-4 position-relative"></i>
                                 </Link>
                             </li>

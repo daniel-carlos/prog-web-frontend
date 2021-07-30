@@ -16,7 +16,7 @@ export const useStore = create(set => ({
         })
     ),
     logout: () => {
-        set(state => ({ logged: false, token: null, user_id: null, isAdmin: null }))
+        set(state => ({ logged: false, token: null, user: {} }))
     },
 
 

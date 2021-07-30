@@ -11,6 +11,7 @@ import MyOrders from './screens/my_orders';
 import ProductList from './screens/product_list';
 import PageCadastro from './screens/cadastro';
 import AdminDashboardPage from './screens/admin_dashboard';
+import AdminPedidosPage from './screens/admin_pedidos';
 
 import {
   BrowserRouter as Router,
@@ -21,7 +22,6 @@ import {
   useRouteMatch
 } from "react-router-dom";
 import { useStore } from "./context/context";
-import AdminPedidosPage from './screens/admin_pedidos';
 
 const getCookie = (cname) => {
   let name = cname + "=";
@@ -39,13 +39,12 @@ const getCookie = (cname) => {
   return "";
 }
 
-function App() {
-  const logged = useStore(state => state.logged);
-  const isAdmin = useStore(state => state.isAdmin);
+function App(props) {
+  const { logged, user } = useStore(state => state);
 
   const PrivateRoute = ({ children, ...rest }) => {
     return (<Route {...rest} render={
-      ({ location }) => getCookie("pw_tkn").length > 0 ?
+      ({ location }) => logged == true ?
         (children) :
         (<Redirect to={{ pathname: '/login', state: { from: location } }} />)} />
     );
@@ -55,85 +54,86 @@ function App() {
     return (
       <Route {...rest}
         render={
-          ({ location }) => true ?
+          ({ location }) => logged === true && user.admin === true ?
             (children) :
-            (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
+            (<Redirect push to={{ pathname: '/login', state: { from: location } }} />)
         }
       />
     );
   }
 
   return (
-    <div className="App">
-      <Router>
-        <Persist></Persist>
-        <PageHeader></PageHeader>
-        <Switch>
-          <Route
-            path="/login"
-            render={() => {
-              return <LoginPage></LoginPage>
-            }}
-          />
+    <Persist>
+      <div className="App">
+        <Router>
+          <PageHeader></PageHeader>
+          <Switch>
+            <Route
+              path="/login"
+              render={() => {
+                return <LoginPage></LoginPage>
+              }}
+            />
 
-          <Route
-            path={`/product/:productId`}
-            render={() => {
-              return <ProductPage></ProductPage>
-            }}
-          />
+            <Route
+              path={`/product/:productId`}
+              render={() => {
+                return <ProductPage></ProductPage>
+              }}
+            />
 
-          <Route
-            path={`/cadastro`}
-            render={() => {
-              return <PageCadastro></PageCadastro>
-            }}
-          />
+            <Route
+              path={`/cadastro`}
+              render={() => {
+                return <PageCadastro></PageCadastro>
+              }}
+            />
 
-          <Route
-            path="/lista"
-            render={() => {
-              return <ProductList></ProductList>
-            }}
-          />
-
-
-          <AdminRoute
-            path="/pedidos"
-          >
-            <AdminPedidosPage></AdminPedidosPage>
-          </AdminRoute>
-
-          <AdminRoute
-            path="/admindashboard"
-          >
-            <AdminDashboardPage></AdminDashboardPage>
-          </AdminRoute>
-
-          <PrivateRoute
-            path="/meus-pedidos"
-          >
-            <MyOrders></MyOrders>
-          </PrivateRoute>
-
-          <Route
-            path="/carrinho"
-            render={() => {
-              return <CartPage></CartPage>
-            }}
-          />
-
-          <Route
-            path="/"
-            render={() => {
-              return <HomePage></HomePage>
-            }}
-          />
-        </Switch>
+            <Route
+              path="/lista"
+              render={() => {
+                return <ProductList></ProductList>
+              }}
+            />
 
 
-      </Router>
-    </div>
+            <AdminRoute
+              path="/pedidos"
+            >
+              <AdminPedidosPage></AdminPedidosPage>
+            </AdminRoute>
+
+            <AdminRoute
+              path={`/dashboard`}
+            >
+              <AdminDashboardPage></AdminDashboardPage>
+            </AdminRoute>
+
+            <PrivateRoute
+              path="/meus-pedidos"
+            >
+              <MyOrders></MyOrders>
+            </PrivateRoute>
+
+            <Route
+              path="/carrinho"
+              render={() => {
+                return <CartPage></CartPage>
+              }}
+            />
+
+            <Route
+              path="/"
+              render={() => {
+                return <HomePage></HomePage>
+              }}
+            />
+          </Switch>
+
+
+        </Router>
+      </div>
+    </Persist>
   );
 }
 
