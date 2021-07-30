@@ -25,46 +25,34 @@ const getCookie = (cname) => {
     return "";
 }
 
-
-const loadCart = () => {
-    const _scart = getCookie("pw_cart");
-    if (_scart.length > 0) {
-        return JSON.parse(_scart)
-    } else {
-        return {}
-    }
-}
-
-const saveCart = (_cart) => {
-    setCookie(JSON.stringify(_cart));
-}
-
+var started = false;
 
 function PersistCart(props) {
-    const state = useStore(s => s);
+    const store = useStore(s => s);
 
-    useLayoutEffect(() => {
-        const cart_str = getCookie("pw_cart");
-        try {
-            if (cart_str === {} || cart_str == null || cart_str == "") {
-                state.setCart({});
-            } else {
-                state.setCart(JSON.parse(cart_str));
+    useEffect(() => {
+        function update() {
+            const _cart = getCookie("pw_cart");
+            if (_cart != "") {
+                store.setCart(JSON.parse(_cart));
+            }else{
+                store.setCart({});
             }
-        } catch (error) {
-            state.clearCart();
         }
-
+        update();
     }, []);
 
     useEffect(() => {
-        if (state.cart == {}) {
-            setCookie("pw_cart", "", -9999);
-        } else {
-            setCookie("pw_cart", JSON.stringify(state.cart), 1);
+        function update() {
+            console.log("2", store.cart);
+            setCookie("pw_cart", JSON.stringify(store.cart), 1);
         }
-    }, [state])
-
+        if (started) {
+            update();
+        } else {
+            started = true;
+        }
+    }, [store]);
 
     return <></>;
 }
