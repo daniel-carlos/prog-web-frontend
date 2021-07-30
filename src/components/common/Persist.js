@@ -25,42 +25,48 @@ const getCookie = (cname) => {
     return "";
 }
 
-function Persist(props) {
-    const logged = useStore(s => s.logged);
-    const token = useStore(s => s.token);
-    const login = useStore(s => s.login);
-    const logout = useStore(s => s.logout);
-    const user_id = useStore(s => s.user_id);
-    const isAdmin = useStore(s => s.isAdmin);
+var started = false;
 
-    useLayoutEffect(() => {
-        //Login
-        const _token = getCookie("pw_tkn");
-        const _user_id = getCookie("pw_uid");
-        const _isAdmin = getCookie("pw_adm");
-        if (_token.length > 0) {
-            login(_token, _user_id, _isAdmin);
-        } else {
-            logout();
+function Persist(props) {
+    const store = useStore(s => s);
+
+    useEffect(() => {
+        function update() {
+            // Login
+            const _user = getCookie("pw_user");
+            const _token = getCookie("pw_token");
+            if (_token != "" && _user != "") {
+                store.login(JSON.parse(_token), JSON.parse(_user));
+            }else{
+                store.setCart({});
+            }
+
+            // Carrinho
+            const _cart = getCookie("pw_cart");
+            if (_cart != "") {
+                store.setCart(JSON.parse(_cart));
+            }else{
+                store.setCart({});
+            }
         }
+        update();
     }, []);
 
     useEffect(() => {
-        const save = () => {
-            if (logged) {
-                setCookie("pw_tkn", token, 1);
-                setCookie("pw_uid", user_id, 1);
-                setCookie("pw_adm", isAdmin, 1);
-            } else {
-                setCookie("pw_tkn", "", -999);
-                setCookie("pw_uid", "", -999);
-                setCookie("pw_adm", "", -999);
-            }
+        function update() {
+            console.log("2", store.cart);
+            setCookie("pw_cart", JSON.stringify(store.cart), 1);
+            setCookie("pw_user", JSON.stringify(store.user), 1);
+            setCookie("pw_token", JSON.stringify(store.token), 1);
         }
-        save();
-    }, [logged, user_id, isAdmin]);
+        if (started) {
+            update();
+        } else {
+            started = true;
+        }
+    }, [store]);
 
-    return <>{props.children}</>;
+    return <></>;
 }
 
 export default Persist;

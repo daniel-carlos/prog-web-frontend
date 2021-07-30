@@ -19,7 +19,7 @@ function LoginPage(props) {
             if (resp.data.ok) {
                 setHasError(false);
                 setErrorMsg("");
-                login(resp.data.token, resp.data.user_id, resp.data.admin);
+                login(resp.data.token, resp.data.user);
                 setLoading(true);
             } else {
                 setErrorMsg(resp.data.msg);

@@ -2,17 +2,17 @@ import create from 'zustand';
 import produce from "immer";
 
 export const useStore = create(set => ({
-    user_id: "",
-    isAdmin: "",
+    user: {},
+
     token: "",
     setToken: "",
+
     logged: false,
-    login: (token, user_id, isAdmin) => set(
+    login: (token, user) => set(
         produce((store) => {
             store.logged = true;
             store.token = token;
-            store.user_id = user_id;
-            store.isAdmin = isAdmin;
+            store.user = user;
         })
     ),
     logout: () => {

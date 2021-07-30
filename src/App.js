@@ -2,7 +2,6 @@ import './App.css';
 import PageHeader from './components/common/PageHeader';
 
 import Persist from './components/common/Persist';
-import PersistCart from './components/common/PersistCart';
 
 import HomePage from './screens/home';
 import LoginPage from './screens/login';
@@ -68,7 +67,6 @@ function App() {
     <div className="App">
       <Router>
         <Persist></Persist>
-        <PersistCart></PersistCart>
         <PageHeader></PageHeader>
         <Switch>
           <Route
