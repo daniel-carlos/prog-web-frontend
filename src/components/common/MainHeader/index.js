@@ -26,9 +26,9 @@ function MainHeader(props) {
 
                 <div className="navbar" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <CartNavItem></CartNavItem>
-                        <AdminDashboardNavItem></AdminDashboardNavItem>
-                        <OrdersNavItem></OrdersNavItem>
+                        {logged && !user.admin && <CartNavItem></CartNavItem>}
+                        {user.admin && <AdminDashboardNavItem></AdminDashboardNavItem>}
+                        {user.admin && <OrdersNavItem></OrdersNavItem>}
                         {logged === true ?
                             <LoggedNavItem></LoggedNavItem>
                             :
