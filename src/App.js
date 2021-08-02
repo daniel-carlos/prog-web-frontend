@@ -1,5 +1,5 @@
 import './App.css';
-import PageHeader from './components/common/PageHeader';
+import MainHeader from './components/common/MainHeader';
 
 import Persist from './components/common/Persist';
 
@@ -22,43 +22,27 @@ import {
   useRouteMatch
 } from "react-router-dom";
 import { useStore } from "./context/context";
+import { useLayoutEffect, useEffect, useState } from 'react';
 
-const getCookie = (cname) => {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
 
 function App(props) {
-  const { logged, user } = useStore(state => state);
 
   const PrivateRoute = ({ children, ...rest }) => {
-    return (<Route {...rest} render={
-      ({ location }) => logged == true ?
-        (children) :
-        (<Redirect to={{ pathname: '/login', state: { from: location } }} />)} />
-    );
-  }
+    const { logged } = useStore(s => s);
+    const [redirect, setRedirect] = useState(false);
 
-  const AdminRoute = ({ children, ...rest }) => {
+    useEffect(() => {
+      setRedirect(!logged);
+    })
+
     return (
       <Route {...rest}
         render={
-          ({ location }) => logged === true && user.admin === true ?
-            (children) :
-            (<Redirect push to={{ pathname: '/login', state: { from: location } }} />)
-        }
-      />
+          ({ location }) => redirect ?
+            (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
+            :
+            (children)
+        } />
     );
   }
 
@@ -66,7 +50,7 @@ function App(props) {
     <Persist>
       <div className="App">
         <Router>
-          <PageHeader></PageHeader>
+          <MainHeader></MainHeader>
           <Switch>
             <Route
               path="/login"
@@ -97,24 +81,27 @@ function App(props) {
             />
 
 
-            <AdminRoute
+            <Route
               path="/pedidos"
             >
               <AdminPedidosPage></AdminPedidosPage>
-            </AdminRoute>
+            </Route>
 
-            <AdminRoute
-              path={`/dashboard`}
-            >
-              <AdminDashboardPage></AdminDashboardPage>
-            </AdminRoute>
-
-            <PrivateRoute
+            
+            <Route
               path="/meus-pedidos"
             >
               <MyOrders></MyOrders>
-            </PrivateRoute>
+            </Route>
+            
+            
+            <Route
+              path="/dashboard"
+            >
+              <AdminDashboardPage></AdminDashboardPage>
+            </Route>
 
+            
             <Route
               path="/carrinho"
               render={() => {

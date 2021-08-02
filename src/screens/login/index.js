@@ -30,7 +30,7 @@ function LoginPage(props) {
     }
 
     return (
-        <div className="container">
+        <form  className="container">
             {logged === true && <Redirect to="/" />}
 
             {hasError === true && <div className='text-danger'>{errorMsg}</div>}
@@ -78,7 +78,7 @@ function LoginPage(props) {
                     Criar Conta
                 </Link>
             </div>
-        </div>
+        </form>
     );
 }
 
