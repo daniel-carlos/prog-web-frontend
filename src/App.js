@@ -26,28 +26,34 @@ import { useLayoutEffect, useEffect, useState } from 'react';
 
 
 function App(props) {
+  const { logged, loading } = useStore(s => s);
 
   const PrivateRoute = ({ children, ...rest }) => {
-    const { logged } = useStore(s => s);
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
-      setRedirect(!logged);
-    })
+      if (!loading) {
+        setRedirect(!logged);
+      }
+    }, [loading, logged])
 
     return (
-      <Route {...rest}
-        render={
-          ({ location }) => redirect ?
-            (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
-            :
-            (children)
-        } />
+      !loading ?
+        <Route {...rest}
+          render={
+            ({ location }) => redirect ?
+              (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
+              :
+              (children)
+          } />
+        :
+        <></>
     );
   }
 
   return (
-    <Persist>
+    <div>
+      <Persist></Persist>
       <div className="App">
         <Router>
           <MainHeader></MainHeader>
@@ -87,21 +93,21 @@ function App(props) {
               <AdminPedidosPage></AdminPedidosPage>
             </Route>
 
-            
-            <Route
+
+            <PrivateRoute
               path="/meus-pedidos"
             >
               <MyOrders></MyOrders>
-            </Route>
-            
-            
-            <Route
+            </PrivateRoute>
+
+
+            <PrivateRoute
               path="/dashboard"
             >
               <AdminDashboardPage></AdminDashboardPage>
-            </Route>
+            </PrivateRoute>
 
-            
+
             <Route
               path="/carrinho"
               render={() => {
@@ -120,7 +126,7 @@ function App(props) {
 
         </Router>
       </div>
-    </Persist>
+    </div>
   );
 }
 

@@ -3,6 +3,13 @@ import produce from "immer";
 import { api } from '../api/backend';
 
 export const useStore = create(set => ({
+    loading: true,
+    setLoading: (isLoading = false) => set(
+        produce((store)=>{
+            store.loading = isLoading;
+        })
+    ),
+    
     user: {},
 
     token: "",

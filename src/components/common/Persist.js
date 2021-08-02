@@ -30,7 +30,7 @@ var started = false;
 function Persist(props) {
     const store = useStore(s => s);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         function update() {
             // Login
             const _user = getCookie("pw_user");
@@ -49,11 +49,12 @@ function Persist(props) {
             }else{
                 store.setCart({});
             }
+            store.setLoading(false);
         }
         update();
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         function update() {
             console.log("2", store.cart);
             setCookie("pw_cart", JSON.stringify(store.cart), 1);
