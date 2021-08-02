@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import { useStore } from "../../../context/context";
 import icon from "../../../assets/icons/jumping-dog.png";
+
 import UnloggedNavItem from './unloggedNavItem';
 import LoggedNavItem from './loggedNavItem';
 import CartNavItem from './cartNavItem';
@@ -9,16 +10,7 @@ import AdminDashboardNavItem from './adminDashboardNavItem';
 import OrdersNavItem from './ordersNavItem';
 
 function MainHeader(props) {
-    const { logged, logout, login, cart, user } = useStore(state => ({ logged: state.logged, login: state.login, logout: state.logout, cart: state.cart, user: state.user }));
-    const [cartCount, setCartCount] = useState(0);
-
-    useEffect(() => {
-        let count = 0;
-        Object.keys(cart).map((c, i) => {
-            count += parseInt(cart[c]);
-        });
-        setCartCount(count);
-    });
+    const { logged, user } = useStore(s => s);
 
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark sticky-top">
