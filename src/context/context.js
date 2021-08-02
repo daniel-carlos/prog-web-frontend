@@ -1,5 +1,6 @@
 import create from 'zustand';
 import produce from "immer";
+import { api } from '../api/backend';
 
 export const useStore = create(set => ({
     user: {},
@@ -13,13 +14,21 @@ export const useStore = create(set => ({
             store.logged = true;
             store.token = token;
             store.user = user;
+            api.setHeader("Authorization", `Bearer ${token}`);
         })
     ),
-    logout: () => {
-        set(state => ({ logged: false, token: null, user: {} }))
-    },
-
-
+    logout: () => set(
+        produce((store) => {
+            store.logged = false;
+            store.token = null;
+            store.user = {};
+            api.deleteHeader("Authorization");
+        })
+    )
+    ,
+    
+    
+    // set(state => ({ logged: false, token: null, user: {} }))
 
 
     cart: {},
@@ -62,4 +71,8 @@ export const useStore = create(set => ({
             return sum;
         })
     ),
+
+
+    dateNow: () => Date.now(),
+     
 }))
