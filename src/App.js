@@ -26,106 +26,93 @@ import { useLayoutEffect, useEffect, useState } from 'react';
 
 
 function App(props) {
-  const { logged, loading } = useStore(s => s);
-
-  const PrivateRoute = ({ children, ...rest }) => {
-    const [redirect, setRedirect] = useState(false);
-
-    useEffect(() => {
-      if (!loading) {
-        setRedirect(!logged);
-      }
-    }, [loading, logged])
-
-    return (
-      !loading ?
-        <Route {...rest}
-          render={
-            ({ location }) => redirect ?
-              (<Redirect to={{ pathname: '/login', state: { from: location } }} />)
-              :
-              (children)
-          } />
-        :
-        <></>
-    );
-  }
+  const { logged, loading, user } = useStore(s => s);
 
   return (
     <div>
       <Persist></Persist>
-      <div className="App">
-        <Router>
-          <MainHeader></MainHeader>
-          <Switch>
-            <Route
-              path="/login"
-              render={() => {
-                return <LoginPage></LoginPage>
-              }}
-            />
+      {!loading &&
+        <div className="App">
+          <Router>
+            <MainHeader></MainHeader>
+            <Switch>
+              <Route
+                path="/login"
+                render={() => {
+                  return <LoginPage></LoginPage>
+                }}
+              />
 
-            <Route
-              path={`/product/:productId`}
-              render={() => {
-                return <ProductPage></ProductPage>
-              }}
-            />
+              <Route
+                path={`/product/:productId`}
+                render={() => {
+                  return <ProductPage></ProductPage>
+                }}
+              />
 
-            <Route
-              path={`/cadastro`}
-              render={() => {
-                return <PageCadastro></PageCadastro>
-              }}
-            />
+              <Route
+                path={`/cadastro`}
+                render={() => {
+                  return <PageCadastro></PageCadastro>
+                }}
+              />
 
-            <Route
-              path="/lista"
-              render={() => {
-                return <ProductList></ProductList>
-              }}
-            />
-
-
-            <Route
-              path="/pedidos"
-            >
-              <AdminPedidosPage></AdminPedidosPage>
-            </Route>
+              <Route
+                path="/lista"
+                render={() => {
+                  return <ProductList></ProductList>
+                }}
+              />
 
 
-            <PrivateRoute
-              path="/meus-pedidos"
-            >
-              <MyOrders></MyOrders>
-            </PrivateRoute>
+              <Route
+                path="/pedidos"
+              >
+                <AdminPedidosPage></AdminPedidosPage>
+              </Route>
 
 
-            <PrivateRoute
-              path="/dashboard"
-            >
-              <AdminDashboardPage></AdminDashboardPage>
-            </PrivateRoute>
+              <Route
+                path="/meus-pedidos"
+              >
+                <MyOrders></MyOrders>
+              </Route>
 
 
-            <Route
-              path="/carrinho"
-              render={() => {
-                return <CartPage></CartPage>
-              }}
-            />
-
-            <Route
-              path="/"
-              render={() => {
-                return <HomePage></HomePage>
-              }}
-            />
-          </Switch>
+              <Route
+                path="/dashboard"
+                render={() => {
+                  return (
+                    user.admin?
+                      <AdminDashboardPage></AdminDashboardPage>
+                      :
+                      <Redirect to="/login" />
+                  )
+                }}
+              >
+              </Route>
 
 
-        </Router>
-      </div>
+              <Route
+                path="/carrinho"
+                render={() => {
+                  return <CartPage></CartPage>
+                }}
+              />
+
+              <Route
+                path="/"
+                render={() => {
+                  return <HomePage></HomePage>
+                }}
+              />
+            </Switch>
+
+
+          </Router>
+        </div>
+
+      }
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { api } from '../../api/backend';
 import { useStore } from "../../context/context";
 
 
@@ -31,13 +32,22 @@ function Persist(props) {
     const store = useStore(s => s);
 
     useLayoutEffect(() => {
+
+        // Fazer o logout se o token expirar
+        const tokenMonitor = (response) => {
+            if (response.status === 401) {
+                store.logout()
+            }
+        }
+        api.addMonitor(tokenMonitor);
+
         function update() {
             // Login
             const _user = getCookie("pw_user");
             const _token = getCookie("pw_token");
             if (_token !== "" && _token != null && _token != "null" && _user !== "") {
                 store.login(JSON.parse(_token), JSON.parse(_user));
-            }else{
+            } else {
                 store.logout();
                 store.setCart({});
             }
@@ -46,7 +56,7 @@ function Persist(props) {
             const _cart = getCookie("pw_cart");
             if (_cart != "") {
                 store.setCart(JSON.parse(_cart));
-            }else{
+            } else {
                 store.setCart({});
             }
             store.setLoading(false);

@@ -7,6 +7,7 @@ function MyOrders(props) {
     const { dateNow } = useStore(s => s);
 
     useEffect(() => {
+        
         async function loadData() {
             const response = await api.post("order/list", {
                 status: "open"
