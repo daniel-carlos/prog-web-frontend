@@ -3,15 +3,15 @@ export const orderStatus = {
         title: "Aberto",
         color: "blue",
     },
-    "confirmed": {
+    confirmed: {
         title: "Confirmado",
-        color: "darkgoldenrod",
-    },
-    "delivered": {
-        title: "Finalizado",
         color: "green",
     },
-    "canceled": {
+    delivered: {
+        title: "Finalizado",
+        color: "black",
+    },
+    canceled: {
         title: "Cancelado",
         color: "red",
     },
