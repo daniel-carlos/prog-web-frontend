@@ -25,8 +25,8 @@ function MyOrders(props) {
         const date = moment(order.created_date).format("DD/MM/YYYY"); 
         
         return (
-            <div class="card">
-                <div class="card-body">
+            <div className="card">
+                <div className="card-body">
                     <div className="d-flex justify-content-between">
                         <div className="mx-1">
                             <div className="fw-bold">Pedido</div>
