@@ -23,6 +23,7 @@ import {
 } from "react-router-dom";
 import { useStore } from "./context/context";
 import { useLayoutEffect, useEffect, useState } from 'react';
+import InventoryPageAdmin from './screens/admin_inventory';
 
 
 function App(props) {
@@ -75,7 +76,23 @@ function App(props) {
               <Route
                 path="/meus-pedidos"
               >
-                <MyOrders></MyOrders>
+                {logged === true ?
+                  <MyOrders></MyOrders>
+                  :
+                  <Redirect to="/login" />
+                }
+              </Route>
+
+
+
+              <Route
+                path="/estoque"
+              >
+                {user.admin === true ?
+                  <InventoryPageAdmin></InventoryPageAdmin>
+                  :
+                  <Redirect to="/login" />
+                }
               </Route>
 
 
@@ -83,7 +100,7 @@ function App(props) {
                 path="/dashboard"
                 render={() => {
                   return (
-                    user.admin?
+                    user.admin ?
                       <AdminDashboardPage></AdminDashboardPage>
                       :
                       <Redirect to="/login" />

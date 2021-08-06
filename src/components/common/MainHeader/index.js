@@ -8,6 +8,7 @@ import LoggedNavItem from './loggedNavItem';
 import CartNavItem from './cartNavItem';
 import AdminDashboardNavItem from './adminDashboardNavItem';
 import OrdersNavItem from './ordersNavItem';
+import InventoryNavItem from './inventoryNavItem';
 
 function MainHeader(props) {
     const { logged, user } = useStore(s => s);
@@ -27,6 +28,7 @@ function MainHeader(props) {
                 <div className="navbar" id="navbarSupportedContent">
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         {!user.admin && <CartNavItem></CartNavItem>}
+                        {user.admin && <InventoryNavItem></InventoryNavItem>}
                         {user.admin && <AdminDashboardNavItem></AdminDashboardNavItem>}
                         {user.admin && <OrdersNavItem></OrdersNavItem>}
                         {logged === true ?

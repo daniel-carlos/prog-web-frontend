@@ -1,15 +1,16 @@
 import create from 'zustand';
 import produce from "immer";
 import { api } from '../api/backend';
+import * as bootstrap from "bootstrap";
 
 export const useStore = create(set => ({
     loading: true,
     setLoading: (isLoading = false) => set(
-        produce((store)=>{
+        produce((store) => {
             store.loading = isLoading;
         })
     ),
-    
+
     user: {},
 
     token: "",
@@ -33,8 +34,8 @@ export const useStore = create(set => ({
         })
     )
     ,
-    
-    
+
+
     // set(state => ({ logged: false, token: null, user: {} }))
 
 
@@ -49,7 +50,7 @@ export const useStore = create(set => ({
         produce((store) => {
             const { cart } = store;
             const propName = `${product_id}`;
-            delete(cart[propName]);
+            delete (cart[propName]);
         })
     ),
     addCart: (product_id, increase) => set(
@@ -80,6 +81,31 @@ export const useStore = create(set => ({
     ),
 
 
-    dateNow: () => Date.now(),
-     
+    modal: undefined,
+    setModal: (modal) => set(
+        produce((store) => {
+            store.modal = modal;
+        })
+    ),
+    openModal: (elId) => set(
+        produce((store) => {
+            var modal = new bootstrap.Modal(document.getElementById(elId), {});
+            store.modal = modal;
+            modal.show();
+        })
+    ),
+    closeModal: () => set(
+        produce((store) => {
+            if (store.modal != undefined) {
+                store.modal.hide();
+            }
+        })
+    ),
+
+    selection: undefined,
+    setSelection: (selection) => set(
+        produce((store) => {
+            store.selection = selection;
+        })
+    )
 }))
