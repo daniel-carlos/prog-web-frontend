@@ -16,7 +16,7 @@ function InventoryPageAdmin(props) {
 
     const refreshData = async () => {
         setLoading(true);
-        const result = await api.get("product/list?size=1000");
+        const result = await api.get("product/list?size=1000&stock=0");
         if (result.ok) {
             setProducts(result.data.products);
         }
@@ -121,7 +121,6 @@ function InventoryPageAdmin(props) {
                         refreshData();
                     }}
                     className="btn btn-primary">
-                    <i className="bi bi-plus-lg me-2"></i>
                     <span> Atualizar </span>
                 </button>
                     :

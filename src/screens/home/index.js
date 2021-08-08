@@ -21,19 +21,24 @@ function HomePage(props) {
         return (
             <div className="card my-2" style={{ height: 400, width: 250 }}>
                 <Link to={`product/${p.id}`}>
-                    <img className="card-img-top img-fluid" src={p.thumb} alt="Card image cap" />
+                    <img
+                        style={{
+                            maxHeight: 250, 
+                            objectFit: 'contain',
+                        }}
+                        className="card-img-top img-fluid" src={p.thumb} alt="Card image cap" />
                 </Link>
                 <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{p.name}</h5>
                     <div className=" mt-auto">
                         <p className="flex-grow-1 fs-4 card-text">R$ {p.price}</p>
                     </div>
-                    <Link 
-                    to="/" //TODO: mudar para carrinho
-                    onClick={()=>{
-                        const c = addCart(p.id, 1, cart);
-                    }}
-                    className="btn btn-primary"
+                    <Link
+                        to="/" //TODO: mudar para carrinho
+                        onClick={() => {
+                            const c = addCart(p.id, 1, cart);
+                        }}
+                        className="btn btn-primary"
                     >Comprar</Link>
                 </div>
             </div>
