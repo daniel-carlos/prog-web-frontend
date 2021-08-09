@@ -72,7 +72,7 @@ function InventoryPageAdmin(props) {
             right: true,
             cell: row => <div>{
                 row.stock > 0 ?
-                    `${row.stock}`
+                    <div>{`${row.stock}/${row.reserved}`} <span className="fw-bold">{`(${row.stock-row.reserved})`}</span></div>
                     :
                     <span className="text-danger">Indisponível</span>
             }</div>,
