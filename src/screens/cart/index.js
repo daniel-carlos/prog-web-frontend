@@ -3,6 +3,7 @@ import { api } from '../../api/backend';
 import { useStore } from "../../context/context";
 import { useModalStore } from "../../context/modalContext";
 import { Link, Redirect } from "react-router-dom";
+import Toast from './toast';
 
 function CartPage(props) {
     const { cart, clearCart, setCartItem, removeProduct, user_id } = useStore(state => state);
@@ -24,7 +25,7 @@ function CartPage(props) {
 
         return (
             <div className="card mb-2">
-               <div className="card-header d-flex justify-content-between">
+                <div className="card-header d-flex justify-content-between">
                     <div className="fs-4">
                         {product.name}
                     </div>
@@ -53,7 +54,7 @@ function CartPage(props) {
                             <div className="d-flex">
                                 <button className="btn btn-primary btn-sm" disabled={amount <= 1}
                                     onClick={() => {
-                                        setCartItem(product.id, amount - 1);
+                                        removeCartItem(product, amount);
                                     }}
                                 >
                                     <i className="bi bi-dash"></i>
@@ -61,13 +62,19 @@ function CartPage(props) {
                                 <span className="mx-3">{`${amount}`}</span>
                                 <button className="btn btn-primary btn-sm"
                                     onClick={() => {
-                                        setCartItem(product.id, amount + 1);
+                                        addCartItem(product, amount);
                                     }}
                                 >
                                     <i className="bi bi-plus"></i>
 
                                 </button>
                             </div>
+                            {
+                                product.available <= 5 &&
+                                <div className="text-danger">
+                                    Poucas Unidades
+                                </div>
+                            }
                         </div>
 
                     </div>
@@ -75,6 +82,27 @@ function CartPage(props) {
             </div>
         );
     }
+
+
+    const addCartItem = (product, amount) => {
+        console.log("Add", product.available, amount);
+        if (amount < product.available) {
+            if(amount < product.limit){
+                setCartItem(product.id, amount + 1);
+            }else{
+                alert(`O limite de unidades para esse produto é ${product.limit}.`);
+            }
+        }else{
+            alert(`Existem apenas ${product.available} unidades desse produto disponíveis.`);
+        }
+    }
+
+    const removeCartItem = (product, amount) => {
+        if (amount > 1) {
+            setCartItem(product.id, amount - 1);
+        }
+    }
+
 
     const ConfirmRemoveDialog = () => {
         return (
@@ -121,7 +149,7 @@ function CartPage(props) {
             user_id: user_id,
             cart: cart
         });
-        if(resp.ok){
+        if (resp.ok) {
             clearCart();
             setRedirectMyOrders(true);
         }
@@ -129,8 +157,8 @@ function CartPage(props) {
 
     return (
         <div className="container">
-            {redirectMyOrders && <Redirect to="meus-pedidos"/>}
-                
+            {redirectMyOrders && <Redirect to="meus-pedidos" />}
+
             <h1>Meu Carrinho</h1>
 
             {

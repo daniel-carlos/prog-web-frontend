@@ -46,7 +46,7 @@ function MyOrders(props) {
                         </div>
                         <div className="mx-1">
                             <div className="fw-bold">Total</div>
-                            <div>{`R$${order.products.reduce((a, b) => ({price: a.price + b.price})).price}`}</div>
+                            <div>{`R$${order.products.reduce((a, b) => ({price: a.price + b.price})).price.toFixed(2)}`}</div>
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,6 @@ function HomePage(props) {
     const addCart = useStore(state => state.addCart);
     const cart = useStore(state => state.cart);
 
-    useDebugValue(`Cart ${cart}`)
     useEffect(async () => {
         const resp = await api.get("/product/list?size=12");
         if (resp.ok) {
@@ -23,7 +22,7 @@ function HomePage(props) {
                 <Link to={`product/${p.id}`}>
                     <img
                         style={{
-                            maxHeight: 250, 
+                            maxHeight: 250,
                             objectFit: 'contain',
                         }}
                         className="card-img-top img-fluid" src={p.thumb} alt="Card image cap" />
@@ -33,13 +32,23 @@ function HomePage(props) {
                     <div className=" mt-auto">
                         <p className="flex-grow-1 fs-4 card-text">R$ {p.price}</p>
                     </div>
-                    <Link
-                        to="/" //TODO: mudar para carrinho
-                        onClick={() => {
-                            const c = addCart(p.id, 1, cart);
-                        }}
-                        className="btn btn-primary"
-                    >Comprar</Link>
+                    {
+                        Object.keys(cart).includes(p.id.toString()) ?
+                            <Link
+                                to="/carrinho"
+                                className="btn btn-success"
+                            >No Carrinho</Link>
+                            :
+                            <Link
+                                to="/"
+                                onClick={() => {
+                                    const c = addCart(p.id, 1, cart);
+                                }}
+                                className="btn btn-primary"
+                            >Comprar</Link>
+
+                    }
+
                 </div>
             </div>
         )
