@@ -4,11 +4,13 @@ import { api } from '../../api/backend';
 import DataTable from 'react-data-table-component';
 import { searchProduct } from '../../components/common/searchControl';
 import AddInventoryModal from './addInventoryModal.js';
+import { Redirect } from "react-router-dom";
 
 function InventoryPageAdmin(props) {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     const [search, setSearch] = useState("");
 
@@ -103,18 +105,25 @@ function InventoryPageAdmin(props) {
             grow: 1,
         },
         {
-            name: '',
-            sortable: true,
-            right: true,
-            cell: product => <div className="">
-                <i className="bi bi-box-seam btn fs-3"
-                    onClick={() => {
-                        setSelection(product);
-                        openModal('addInventoryModal');
-                    }}
-                ></i>
-            </div>,
-            grow: 1,
+            name: 'Ações',
+            sortable: false,
+            right: false,
+            cell: product => (
+                <div className="d-flex">
+                    <i className="bi bi-pencil btn fs-3"
+                        onClick={() => {
+                            setRedirect(product.id)
+                        }}
+                    ></i>
+                    <i className="bi bi-box-seam btn fs-3"
+                        onClick={() => {
+                            setSelection(product);
+                            openModal('addInventoryModal');
+                        }}
+                    ></i>
+                </div>
+            ),
+            grow: 2,
         },
     ];
 
@@ -137,6 +146,7 @@ function InventoryPageAdmin(props) {
 
     return (
         <div className="container mt-2">
+            {redirect > 0 && <Redirect to={`/productedit/${redirect}`} push={true}></Redirect>}
             <AddInventoryModal callback={modalCallback}></AddInventoryModal>
             <header className='d-flex justify-content-between'>
                 <h2>Controle de Estoque</h2>

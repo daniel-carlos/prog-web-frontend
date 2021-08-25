@@ -12,6 +12,7 @@ import ProductList from './screens/product_list';
 import PageCadastro from './screens/cadastro';
 import AdminDashboardPage from './screens/admin_dashboard';
 import AdminPedidosPage from './screens/admin_pedidos';
+import EditProduct from './screens/edit_product';
 
 import {
   BrowserRouter as Router,
@@ -48,6 +49,13 @@ function App(props) {
                 path={`/product/:productId`}
                 render={() => {
                   return <ProductPage></ProductPage>
+                }}
+              />
+
+              <Route
+                path={`/productedit/:productId`}
+                render={() => {
+                  return <EditProduct></EditProduct>
                 }}
               />
 
