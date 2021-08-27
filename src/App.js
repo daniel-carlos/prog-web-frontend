@@ -12,7 +12,7 @@ import ProductList from './screens/product_list';
 import PageCadastro from './screens/cadastro';
 import AdminDashboardPage from './screens/admin_dashboard';
 import AdminPedidosPage from './screens/admin_pedidos';
-import EditProduct from './screens/edit_product';
+import EditProduct from './screens/admin_product';
 
 import {
   BrowserRouter as Router,
@@ -54,6 +54,13 @@ function App(props) {
 
               <Route
                 path={`/productedit/:productId`}
+                render={() => {
+                  return <EditProduct></EditProduct>
+                }}
+              />
+
+              <Route
+                path={`/productnew/`}
                 render={() => {
                   return <EditProduct></EditProduct>
                 }}

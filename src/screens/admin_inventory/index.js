@@ -4,7 +4,7 @@ import { api } from '../../api/backend';
 import DataTable from 'react-data-table-component';
 import { searchProduct } from '../../components/common/searchControl';
 import AddInventoryModal from './addInventoryModal.js';
-import { Redirect } from "react-router-dom";
+import { Redirect, Link } from "react-router-dom";
 
 function InventoryPageAdmin(props) {
     const [products, setProducts] = useState([]);
@@ -110,11 +110,9 @@ function InventoryPageAdmin(props) {
             right: false,
             cell: product => (
                 <div className="d-flex">
-                    <i className="bi bi-pencil btn fs-3"
-                        onClick={() => {
-                            setRedirect(product.id)
-                        }}
-                    ></i>
+                    <Link to={`/productedit/${product.id}`}>
+                        <i className="bi bi-pencil btn fs-3"></i>
+                    </Link>
                     <i className="bi bi-box-seam btn fs-3"
                         onClick={() => {
                             setSelection(product);
@@ -146,10 +144,10 @@ function InventoryPageAdmin(props) {
 
     return (
         <div className="container mt-2">
-            {redirect > 0 && <Redirect to={`/productedit/${redirect}`} push={true}></Redirect>}
+            {/* {redirect > 0 && <Redirect to={`/productedit/${redirect}`} push={true}></Redirect>} */}
             <AddInventoryModal callback={modalCallback}></AddInventoryModal>
-            <header className='d-flex justify-content-between'>
-                <h2>Controle de Estoque</h2>
+            <header className='d-flex'>
+                <h2 className="flex-grow-1">Controle de Estoque</h2>
                 {!loading ? <button
                     onClick={() => {
                         refreshData();
@@ -162,6 +160,9 @@ function InventoryPageAdmin(props) {
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 }
+                <Link className="btn btn-primary ms-3" to={`/productedit/0`}>
+                    <span> Novo Produto </span>
+                </Link>
             </header>
 
             <main className="mt-4">
