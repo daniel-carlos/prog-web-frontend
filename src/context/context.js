@@ -107,5 +107,11 @@ export const useStore = create(set => ({
         produce((store) => {
             store.selection = selection;
         })
-    )
+    ),
+
+
+    content: async (name) => {
+        const resp = await api.get(`/image/${name}`);
+        return resp.data;
+    },
 }))

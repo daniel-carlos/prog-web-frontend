@@ -6,11 +6,13 @@ import { Redirect } from "react-router-dom";
 
 function EditProduct(props) {
     let { productId } = useParams();
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState({ });
     const [categs, setCategs] = useState([]);
     const [currentCat, setCurrentCat] = useState(0);
     const [thumb, setThumb] = useState("");
     const [categList, setCategList] = useState([]);
+    const [file, setFile] = useState(null);
+    const [mainCategory, setMainCategory] = useState(1);
 
     const { openModal, closeModal } = useStore(s => s);
     const [redirect, setRedirect] = useState(false);
@@ -44,12 +46,21 @@ function EditProduct(props) {
     }, [product])
 
     const UpdateProduct = async () => {
-        if (product.id > 0) {
-            const resp = await api.post('/product/update', { product: product });
-        } else {
-            const resp = await api.post('/product/create', { product: {...product, thumb: thumb, image: thumb} });
+        let formData = new FormData();
+        formData.append("image", file);
+
+        const imgResp = await api.post('/image/upload', formData);
+
+        if(imgResp.ok){
+            const imgName = imgResp.data.file_name;
+            console.log("Created image", imgName);
+            if (product.id > 0) {
+                // const resp = await api.post('/product/update', { product: product });
+            } else {
+                const resp = await api.post('/product/create', { product: {...product, thumb: imgName, image: imgName, category: mainCategory} });
+            }
         }
-        setRedirect(true);
+        // setRedirect(true);
     }
 
     const modal = (
@@ -71,7 +82,7 @@ function EditProduct(props) {
                             }}
                             className="form-select" aria-label="Default select example"
                         >
-                            <option value={0}>Escolha uma categoria</option>
+                            {/* <option value={0}>Escolha uma categoria</option>
                             {
                                 Object.keys(categs).map((key, i) => {
                                     const cat = categs[key];
@@ -79,7 +90,7 @@ function EditProduct(props) {
                                         <option key={`catkey-${key}`} value={`${cat.id}`}>{cat.name}</option>
                                     )
                                 })
-                            }
+                            } */}
                         </select>
                     </div>
                     <div className="modal-footer">
@@ -131,6 +142,22 @@ function EditProduct(props) {
                         />
                     </div>
                 </div>
+                <div className="mb-3">
+                    <select class="form-select" aria-label="Default select example"
+                    value={mainCategory}
+                    onChange={({target})=>{
+                        setMainCategory(parseInt(target.value))
+                    }}
+                
+                    >
+                        {
+                            Object.keys(categs).map((scat, i) => {
+                                const cat = categs[scat];
+                                return (<option key={`cat-${i}`} value={cat.id}>{cat.name}</option>)
+                            })
+                        }
+                    </select>
+                </div>
                 {/* <div className="mb-3">
                     <label htmlFor="exampleFormControlInput2" className="form-label">Categorias</label>
                     <button className="btn btn-primary"
@@ -139,6 +166,8 @@ function EditProduct(props) {
                         }}
                     >Categorias</button>
                 </div> */}
+
+
             </div>
 
             <div className="mb-3">
@@ -158,8 +187,9 @@ function EditProduct(props) {
                             console.log(target);
                             if (target.files && target.files[0]) {
                                 const url = URL.createObjectURL(target.files[0]);
-                                console.log(url);
+                                console.log(target);
                                 setThumb(url);
+                                setFile(target.files[0]);
                             }
                         }}
                     ></input>
