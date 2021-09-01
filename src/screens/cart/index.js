@@ -10,15 +10,26 @@ function CartPage(props) {
     const [products, setProducts] = useState([]);
     const modalContext = useModalStore();
     const [redirectMyOrders, setRedirectMyOrders] = useState(false);
+    const { content } = useStore(s => s);
 
-    useEffect(async () => {
-        if (Object.keys(cart).length > 0) {
-            const resp = await api.post('/product/list', {
-                ids: Object.keys(cart).map((cp, i) => cp)
-            });
-            setProducts(resp.data.products);
+    useEffect(() => {
+        async function load() {
+            if (Object.keys(cart).length > 0) {
+                const resp = await api.post('/product/list', {
+                    ids: Object.keys(cart).map((cp, i) => cp)
+                });
+                setProducts(resp.data.products);
+            }
         }
+        load();
     }, [cart]);
+
+    useEffect(()=> {
+        async function load() {
+            
+        }
+        load();
+    }, [products]);
 
     const ItemCard = ({ product }) => {
         const amount = cart[product.id];
@@ -43,7 +54,7 @@ function CartPage(props) {
                     </div>
                 </div>
                 <div className="card-body d-flex">
-                    <img width={100} height={100} className="" src={product.thumb} alt="Card image cap" />
+                    <img width={100} height={100} style={{objectFit: 'cover'}} className="" src={`http://192.168.0.12:5005/static/uploads/${product.thumb}.png`} alt="Card image cap" />
                     <div className="ms-3">
                         <h5 className="card-title text-success">{`R$${product.price}`}</h5>
                         <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
@@ -87,12 +98,12 @@ function CartPage(props) {
     const addCartItem = (product, amount) => {
         console.log("Add", product.available, amount);
         if (amount < product.available) {
-            if(amount < product.limit){
+            if (amount < product.limit) {
                 setCartItem(product.id, amount + 1);
-            }else{
+            } else {
                 alert(`O limite de unidades para esse produto é ${product.limit}.`);
             }
-        }else{
+        } else {
             alert(`Existem apenas ${product.available} unidades desse produto disponíveis.`);
         }
     }

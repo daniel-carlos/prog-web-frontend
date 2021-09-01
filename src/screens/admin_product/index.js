@@ -1,120 +1,106 @@
-import React, { useEffect, useState } from 'react';
+import React, { useDebugValue, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../api/backend';
 import { useStore } from '../../context/context';
 import { Redirect } from "react-router-dom";
 
-function EditProduct(props) {
+const uuidv4 = require("uuid/v4")
+
+function EditProduct() {
     let { productId } = useParams();
     const [product, setProduct] = useState({ });
     const [categs, setCategs] = useState([]);
-    const [currentCat, setCurrentCat] = useState(0);
-    const [thumb, setThumb] = useState("");
-    const [categList, setCategList] = useState([]);
+    const [blob, setBlob] = useState("");
     const [file, setFile] = useState(null);
-    const [mainCategory, setMainCategory] = useState(1);
 
     const { openModal, closeModal } = useStore(s => s);
     const [redirect, setRedirect] = useState(false);
+
+    const [loadingSave, setLoadingSave] = useState(false);
+
+    const { content } = useStore(s => s);
 
     const loadProduct = async () => {
         if (productId > 0) {
             const resp = await api.get(`/product/${productId}`);
             if (resp.ok) {
-
-                setProduct(resp.data['product']);
-                setThumb(product.thumb);
+                if (resp.data['product'] === { }) {
+                    setProduct({category_id: 3});
+                } else {
+                    setProduct(resp.data['product']);
+                }
+                return true;
+            }else{
+                return false;
             }
+        }else{
+            setProduct({category_id: 1});
         }
     }
 
     const loadCategories = async () => {
         const resp = await api.get("/categories");
         if (resp.ok) {
-            setCategs(resp.data.categories);
-            setCurrentCat(categs[product.category_id]);
+            await setCategs(resp.data.categories);
+            return true;
+        } else {
+            return false;
         }
     }
 
     useEffect(() => {
-        loadCategories();
-        loadProduct();
+        async function loadData() {
+            if (await loadCategories()) {
+                if(await loadProduct()){
+                    console.log(product)
+                }
+            } else {
+                alert("ERRO");
+            }
+        }
+        loadData();
     }, [])
 
     useEffect(() => {
-        setCurrentCat(categs[product.category_id]);
-    }, [product])
+        async function initBlob() {
+            const r = await content(product.thumb)
+            setBlob(r);
+        }
+        initBlob()
 
-    const UpdateProduct = async () => {
+    }, [product.id])
+
+    const SaveProduct = async () => {
+        setLoadingSave(true);
+
         let formData = new FormData();
         formData.append("image", file);
 
-        const imgResp = await api.post('/image/upload', formData);
+        const imgResp = await api.post(`/image/upload/${product.thumb}`, formData);
 
-        if(imgResp.ok){
+        if (imgResp.ok) {
             const imgName = imgResp.data.file_name;
             console.log("Created image", imgName);
             if (product.id > 0) {
-                // const resp = await api.post('/product/update', { product: product });
+                const resp = await api.post('/product/update', { product: product });
+                if(resp.ok){
+                    setRedirect(true);
+                }else{
+                    alert("Erro 02");
+                }
             } else {
-                const resp = await api.post('/product/create', { product: {...product, thumb: imgName, image: imgName, category: mainCategory} });
+                const resp = await api.post('/product/create', { product: { ...product } });
+                if(resp.ok){
+                    setRedirect(true);
+                }else{
+                    alert("Erro 03");
+                }
             }
+        }else{
+            alert("Erro 01")
         }
-        // setRedirect(true);
+        setLoadingSave(false);
     }
-
-    const modal = (
-        <div id="categoryModal" className="modal fade" tabindex="-1">
-            {redirect && <Redirect to="/"></Redirect>}
-            <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Modal title</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        <label htmlFor="exampleFormControlInput1" className="form-label">Preço</label>
-                        <select
-                            value={currentCat != undefined ? currentCat.id : 0}
-                            onChange={({ target }) => {
-                                console.log(target);
-                                setCurrentCat(categs[target.value]);
-                            }}
-                            className="form-select" aria-label="Default select example"
-                        >
-                            {/* <option value={0}>Escolha uma categoria</option>
-                            {
-                                Object.keys(categs).map((key, i) => {
-                                    const cat = categs[key];
-                                    return (
-                                        <option key={`catkey-${key}`} value={`${cat.id}`}>{cat.name}</option>
-                                    )
-                                })
-                            } */}
-                        </select>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary"
-                            onClick={() => {
-                                closeModal();
-                            }}
-                        >Close</button>
-                        <button type="button" className="btn btn-primary"
-                            onClick={() => {
-                                console.log("Save", currentCat);
-                                const cat = { category_name: currentCat.name, category_id: currentCat.id };
-                                if (!categList.includes(cat)) {
-                                    setCategList([...categList, cat]);
-                                }
-                                closeModal();
-                            }}
-                        >Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    )
 
     return (
         <div className="container mb-5">
@@ -142,30 +128,28 @@ function EditProduct(props) {
                         />
                     </div>
                 </div>
+
                 <div className="mb-3">
-                    <select class="form-select" aria-label="Default select example"
-                    value={mainCategory}
-                    onChange={({target})=>{
-                        setMainCategory(parseInt(target.value))
-                    }}
-                
+                    <select className="form-select" aria-label="Default select example"
+                        // value={product.category_id}
+                        onChange={({ target }) => {
+                            console.log(target.value, categs.find(c => { return c.id == target.value }).name);
+                            setProduct({
+                                ...product,
+                                category_id: target.value,
+                                category_name: categs.find(c => { return c.id == target.value }).name
+                            })
+
+                        }}
+
                     >
                         {
-                            Object.keys(categs).map((scat, i) => {
-                                const cat = categs[scat];
+                            categs.map((cat, i) => {
                                 return (<option key={`cat-${i}`} value={cat.id}>{cat.name}</option>)
                             })
                         }
                     </select>
                 </div>
-                {/* <div className="mb-3">
-                    <label htmlFor="exampleFormControlInput2" className="form-label">Categorias</label>
-                    <button className="btn btn-primary"
-                        onClick={() => {
-                            openModal("categoryModal");
-                        }}
-                    >Categorias</button>
-                </div> */}
 
 
             </div>
@@ -179,6 +163,8 @@ function EditProduct(props) {
                     }}
                 ></textarea>
             </div>
+
+
             <div className="mb-3">
                 <label htmlFor="exampleFormControlTextarea1" className="form-label">Imagem</label>
                 <div className="">
@@ -187,15 +173,21 @@ function EditProduct(props) {
                             console.log(target);
                             if (target.files && target.files[0]) {
                                 const url = URL.createObjectURL(target.files[0]);
-                                console.log(target);
-                                setThumb(url);
+                                console.log(url);
+                                setBlob(url);
                                 setFile(target.files[0]);
+                                const nameTemp = uuidv4();
+                                setProduct({
+                                    ...product,
+                                    image: nameTemp,
+                                    thumb: nameTemp,
+                                })
                             }
                         }}
                     ></input>
-                    {thumb != null &&
+                    {blob != null &&
                         <div>
-                            <img width={300} src={thumb} />
+                            <img width={300} height={300} style={{objectFit: 'contain'}} src={blob} />
                         </div>
                     }
                 </div>
@@ -204,13 +196,14 @@ function EditProduct(props) {
             <div className="w-100 d-flex">
                 <button className="btn btn-primary ms-auto"
                     onClick={() => {
-                        UpdateProduct();
+                        SaveProduct();
                     }}
+                    disabled={loadingSave}
                 >
                     Salvar
                 </button>
             </div>
-            {modal}
+            
         </div>
     );
 }
